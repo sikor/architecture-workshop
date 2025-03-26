@@ -1,18 +1,16 @@
-resource "azurerm_app_service_plan" "events_plan" {
+resource "azurerm_service_plan" "events_plan" {
   name                = "events-app-service-plan"
   location            = azurerm_resource_group.events_rg.location
   resource_group_name = azurerm_resource_group.events_rg.name
-  sku {
-    tier = "Basic"
-    size = "B1"
-  }
+  os_type             = "Linux"
+  sku_name            = "B1"
 }
 
 resource "azurerm_app_service" "events_app" {
   name                = "events-app-service"
   location            = azurerm_resource_group.events_rg.location
   resource_group_name = azurerm_resource_group.events_rg.name
-  app_service_plan_id = azurerm_app_service_plan.events_plan.id
+  app_service_plan_id = azurerm_service_plan.events_plan.id
 
   site_config {
     java_version = "17"

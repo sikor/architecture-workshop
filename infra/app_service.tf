@@ -17,8 +17,18 @@ resource "azurerm_linux_web_app" "events_app" {
   }
 
   site_config {
+    always_on = true
+  }
+
+  site_config {
     always_on        = true
-    linux_fx_version = "JAVA|21-java21"
+
+    container_registry_use_managed_identity = false
+
+    application_stack {
+      docker_image_name   = "youracr.azurecr.io/events-app:latest" #TODO ACR
+      docker_registry_url = "https://youracr.azurecr.io" #TODO ACR
+    }
   }
 
   app_settings = {

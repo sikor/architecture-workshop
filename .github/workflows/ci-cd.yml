@@ -56,13 +56,36 @@ jobs:
         run: ./gradlew build
         working-directory: events
 
-      - name: Azure Login
-        uses: azure/login@v1
+      - name: Login to ACR
+        uses: azure/docker-login@v1
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          login-server: youracr.azurecr.io #TODO ACR
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
 
-      - name: Deploy to Azure App Service
+      - name: Build & Push Docker image
+        run: | #TODO ACR
+          docker build -t youracr.azurecr.io/events-app:latest . 
+          docker push youracr.azurecr.io/events-app:latest
+        working-directory: events
+
+      - name: Restart App Service
         uses: azure/webapps-deploy@v3
         with:
           app-name: "events-app"
-          package: "events/build/libs/*.jar"
+          action: "restart"
+
+      - name: Check App Health
+        run: | #TODO app address
+          for i in {1..10}; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://events-app.azurewebsites.net/actuator/health) 
+            echo "Health check HTTP status: $STATUS"
+            if [ "$STATUS" -eq 200 ]; then
+              echo "✅ App is healthy!"
+              exit 0
+            fi
+            echo "Waiting for app to become healthy... ($i/10)"
+            sleep 10
+          done
+          echo "❌ App failed to become healthy in time"
+          exit 1

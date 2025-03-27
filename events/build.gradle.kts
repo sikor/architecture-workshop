@@ -27,7 +27,3 @@ dependencies {
 tasks.withType<Test> {
     useJUnitPlatform()
 }
-
-tasks.register("dockerBuild", Exec::class) {
-    commandLine("docker", "build", "-t", "events-app", ".")
-}

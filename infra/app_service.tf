@@ -18,10 +18,6 @@ resource "azurerm_linux_web_app" "events_app" {
 
   site_config {
     always_on = true
-  }
-
-  site_config {
-    always_on = true
 
     container_registry_use_managed_identity = true
 

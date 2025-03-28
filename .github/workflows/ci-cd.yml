@@ -7,11 +7,14 @@ on:
       - 'feature/**'
 
 jobs:
-  terraform:
-    name: Terraform Plan & Apply
+  terraform-build-deploy:
+    name: Terraform Plan & Apply, Build, Deploy
     runs-on: ubuntu-latest
 
     steps:
+      - name: Set project name in terraform
+        run: echo "TF_VAR_project_name=${{ vars.PROJECT_NAME }}" >> $GITHUB_ENV
+
       - name: Checkout repo
         uses: actions/checkout@v4
 
@@ -35,15 +38,6 @@ jobs:
         run: terraform apply -auto-approve tfplan
         working-directory: infra
 
-  build-and-deploy:
-    name: Build and Deploy App
-    needs: terraform
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
       - name: Set up Java 21
         uses: actions/setup-java@v3
         with:
@@ -56,17 +50,13 @@ jobs:
         run: ./gradlew build
         working-directory: events
 
-      - name: Login to ACR
-        uses: azure/docker-login@v1
-        with:
-          login-server: youracr.azurecr.io #TODO ACR
-          username: ${{ secrets.ACR_USERNAME }}
-          password: ${{ secrets.ACR_PASSWORD }}
+      - name: Azure Container Registry Login
+        run: az acr login --name ${{ vars.PROJECT_NAME }}
 
       - name: Build & Push Docker image
-        run: | #TODO ACR
-          docker build -t youracr.azurecr.io/events-app:latest . 
-          docker push youracr.azurecr.io/events-app:latest
+        run: |
+          docker build -t ${{ vars.PROJECT_NAME }}.azurecr.io/events-app:latest . 
+          docker push ${{ vars.PROJECT_NAME }}.azurecr.io/events-app:latest
         working-directory: events
 
       - name: Restart App Service

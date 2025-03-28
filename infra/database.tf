@@ -1,7 +1,7 @@
 resource "azurerm_postgresql_flexible_server" "events_db" {
   name                   = "events-postgres-db"
-  resource_group_name    = azurerm_resource_group.events_rg.name
-  location               = azurerm_resource_group.events_rg.location
+  resource_group_name    = azurerm_resource_group.project_rg.name
+  location               = azurerm_resource_group.project_rg.location
   administrator_login    = "pgadmin"
   administrator_password = azurerm_key_vault_secret.pg_password.value
 

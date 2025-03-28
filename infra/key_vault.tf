@@ -2,10 +2,10 @@ resource "random_id" "kv_suffix" {
   byte_length = 4
 }
 
-resource "azurerm_key_vault" "events_kv" {
-  name                        = "eventskeyvault${random_id.kv_suffix.hex}"
-  location                    = azurerm_resource_group.events_rg.location
-  resource_group_name         = azurerm_resource_group.events_rg.name
+resource "azurerm_key_vault" "project_kv" {
+  name                        = "${var.project_name}-keyvault-${random_id.kv_suffix.hex}"
+  location                    = azurerm_resource_group.project_rg.location
+  resource_group_name         = azurerm_resource_group.project_rg.name
   tenant_id                   = data.azurerm_client_config.current.tenant_id
   sku_name                    = "standard"
   soft_delete_retention_days = 7
@@ -30,14 +30,14 @@ resource "random_password" "pg_password" {
 resource "azurerm_key_vault_secret" "pg_password" {
   name         = "postgres-password"
   value        = random_password.pg_password.result
-  key_vault_id = azurerm_key_vault.events_kv.id
+  key_vault_id = azurerm_key_vault.project_kv.id
 }
 
 resource "azurerm_key_vault_access_policy" "app_service_policy" {
-  key_vault_id = azurerm_key_vault.events_kv.id
+  key_vault_id = azurerm_key_vault.project_kv.id
 
   tenant_id = data.azurerm_client_config.current.tenant_id
-  object_id = azurerm_app_service.events_app.identity.principal_id
+  object_id = azurerm_linux_web_app.events_app.identity.principal_id
 
   secret_permissions = ["get"]
 }

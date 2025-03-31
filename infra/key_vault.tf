@@ -37,7 +37,7 @@ resource "azurerm_key_vault_access_policy" "app_service_policy" {
   key_vault_id = azurerm_key_vault.project_kv.id
 
   tenant_id = data.azurerm_client_config.current.tenant_id
-  object_id = azurerm_linux_web_app.events_app.identity.principal_id
+  object_id = azurerm_linux_web_app.events_app.identity[0].principal_id
 
-  secret_permissions = ["get"]
+  secret_permissions = ["Get"]
 }

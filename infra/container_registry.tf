@@ -7,7 +7,7 @@ resource "azurerm_container_registry" "project_acr" {
 }
 
 resource "azurerm_role_assignment" "acr_pull" {
-  principal_id   = azurerm_linux_web_app.events_app.identity.principal_id
+  principal_id   = azurerm_linux_web_app.events_app.identity[0].principal_id
   role_definition_name = "AcrPull"
   scope          = azurerm_container_registry.project_acr.id
 }

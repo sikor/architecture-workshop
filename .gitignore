@@ -31,3 +31,4 @@ replay_pid*
 /gradlew
 /gradlew.bat
 /.gradle/
+/infra/.terraform/

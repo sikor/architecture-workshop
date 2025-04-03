@@ -55,20 +55,11 @@ jobs:
         run: ./gradlew build
         working-directory: events
 
-      - name: Azure Container Registry Login
-        run: az acr login --name ${{ vars.PROJECT_NAME }}
-
-      - name: Build & Push Docker image
-        run: |
-          docker build -t ${{ vars.PROJECT_NAME }}.azurecr.io/events-app:latest . 
-          docker push ${{ vars.PROJECT_NAME }}.azurecr.io/events-app:latest
-        working-directory: events
-
-      - name: Restart App Service
+      - name: Deploy to Azure App Service
         uses: azure/webapps-deploy@v3
         with:
           app-name: "events-app"
-          action: "restart"
+          package: "events/build/libs/*.jar"
 
       - name: Check App Health
         run: | #TODO app address

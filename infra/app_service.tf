@@ -22,8 +22,9 @@ resource "azurerm_linux_web_app" "events_app" {
     container_registry_use_managed_identity = true
 
     application_stack {
-      docker_image_name   = "${azurerm_container_registry.project_acr.login_server}/events-app:latest"
-      docker_registry_url = "https://${azurerm_container_registry.project_acr.login_server}"
+      java_server = "JAVA"
+      java_server_version = 21
+      java_version = 21
     }
   }
 

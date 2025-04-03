@@ -15,9 +15,9 @@ resource "azurerm_key_vault" "project_kv" {
     object_id = data.azurerm_client_config.current.object_id
 
     secret_permissions = [
-      "get",
-      "set",
-      "list",
+      "Get",
+      "Set",
+      "List",
     ]
   }
 }

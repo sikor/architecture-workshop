@@ -20,6 +20,8 @@ resource "azurerm_postgresql_flexible_server" "events_db" {
   version    = "13"
   storage_mb = 32768
 
+  zone = "1"
+
   authentication {
     active_directory_auth_enabled = false
     password_auth_enabled         = true

@@ -12,11 +12,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Set project name in terraform
-        run: |
-          echo "TF_VAR_project_name=${{ vars.PROJECT_NAME }}" >> $GITHUB_ENV
-          echo "TF_VAR_subscription_id=${{ vars.SUBSCRIPTION_ID }}" >> $GITHUB_ENV
-
       - name: Checkout repo
         uses: actions/checkout@v4
 
@@ -32,15 +27,15 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Terraform Init
-        run: terraform init
+        run: terraform init -backend-config=${{ vars.TF_BACKEND_CONFIG }}
         working-directory: infra
 
       - name: Terraform Plan
-        run: terraform plan -out=tfplan
+        run: terraform plan -out=tfplan -var-file=${{ vars.TF_VARS_CONFIG }}
         working-directory: infra
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve tfplan
+        run: terraform apply -auto-approve -var-file=${{ vars.TF_VARS_CONFIG }} tfplan
         working-directory: infra
 
       - name: Set up Java 21

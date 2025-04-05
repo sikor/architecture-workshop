@@ -49,7 +49,6 @@ jobs:
 
       - name: Build with Gradle
         run: ./gradlew build
-        working-directory: events
 
       - name: Deploy to Azure App Service
         uses: azure/webapps-deploy@v3

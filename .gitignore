@@ -31,4 +31,8 @@ replay_pid*
 /gradlew
 /gradlew.bat
 /.gradle/
-/infra/.terraform/
+
+# .gitignore
+terraform.tfstate
+terraform.tfstate.backup
+.terraform/

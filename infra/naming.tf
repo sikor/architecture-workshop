@@ -9,10 +9,14 @@ locals {
   # Truncated safe name for resources with short limits (like Key Vault or App Service)
   short_name = substr(local.base_project_name, 0, 10)
 
-  # Suffixes for different resource types
+  # Suffixes for different resource types - project scope
   kv_name        = "${local.short_name}-kv-${random_id.kv_suffix.hex}"
   rg_name        = "${local.short_name}-rg"
+  tf_state_key = "${local.short_name}.tfstate"
+
+  # events service scope
   events_app_name       = "${local.short_name}-events-wa"
   events_postgres_server_name  = "${local.short_name}-events-pgs"
   events_postgres_db_name  = "${local.short_name}-events-pgdb"
+
 }

@@ -38,6 +38,12 @@ jobs:
         run: terraform apply -auto-approve -var-file=${{ vars.TF_VARS_CONFIG }} tfplan
         working-directory: infra
 
+      - name: Get Terraform outputs
+        id: tf_outputs
+        run: |
+          echo "events_app_name=$(terraform output -raw events_app_name)" >> "$GITHUB_OUTPUT"
+          echo "events_app_url=$(terraform output -raw events_app_url)" >> "$GITHUB_OUTPUT"
+
       - name: Set up Java 21
         uses: actions/setup-java@v3
         with:
@@ -53,13 +59,13 @@ jobs:
       - name: Deploy to Azure App Service
         uses: azure/webapps-deploy@v3
         with:
-          app-name: "events-app"
+          app-name: ${{ steps.tf_outputs.outputs.events_app_name }}
           package: "events/build/libs/*.jar"
 
       - name: Check App Health
         run: | #TODO app address
           for i in {1..10}; do
-            STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://events-app.azurewebsites.net/actuator/health) 
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" ${{ steps.tf_outputs.outputs.events_app_url }}) 
             echo "Health check HTTP status: $STATUS"
             if [ "$STATUS" -eq 200 ]; then
               echo "✅ App is healthy!"

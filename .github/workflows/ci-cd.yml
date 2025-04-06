@@ -43,6 +43,7 @@ jobs:
         run: |
           echo "events_app_name=$(terraform output -raw events_app_name)" >> "$GITHUB_OUTPUT"
           echo "events_app_url=$(terraform output -raw events_app_url)" >> "$GITHUB_OUTPUT"
+        working-directory: infra
 
       - name: Set up Java 21
         uses: actions/setup-java@v3

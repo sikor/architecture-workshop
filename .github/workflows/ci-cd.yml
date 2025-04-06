@@ -35,7 +35,7 @@ jobs:
         working-directory: infra
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve -var-file=${{ vars.TF_VARS_CONFIG }} tfplan
+        run: terraform apply -auto-approve tfplan
         working-directory: infra
 
       - name: Get Terraform outputs

@@ -21,8 +21,8 @@ public class CommandController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> addCommands(@RequestBody List<Command> commands) {
-        commandDao.addCommands(commands);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Long> addCommands(@RequestBody List<Command> commands) {
+        List<Number> result = commandDao.addCommands(commands);
+        return ResponseEntity.ok(result.getLast().longValue());
     }
 }

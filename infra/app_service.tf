@@ -59,7 +59,7 @@ resource "azuread_application" "events_app_ad" {
 }
 
 resource "azuread_application_password" "events_app_ad_secret" {
-  application_id = azuread_application.events_app_ad.object_id
+  application_id = azuread_application.events_app_ad.id
   display_name          = "${local.events_ad_name}-secret"
 }
 

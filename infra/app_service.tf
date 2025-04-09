@@ -30,6 +30,7 @@ resource "azurerm_linux_web_app" "events_app" {
 
   app_settings = {
     "DATABASE_URL" = azurerm_postgresql_flexible_server.events_db.fqdn
+    "DATABASE_NAME" = azurerm_postgresql_flexible_server_database.events_db_instance.name
     "POSTGRES_PASSWORD" = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.pg_password.id})"
     "SPRING_PROFILES_ACTIVE" = "cloud"
     "AD_CLIENT_ID" = azuread_application.events_app_ad.client_id

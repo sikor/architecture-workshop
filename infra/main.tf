@@ -4,6 +4,10 @@ provider "azurerm" {
   subscription_id = var.subscription_id
 }
 
+provider "azuread" {
+  # No extra config needed if you're logged in via `az login`
+}
+
 resource "azurerm_resource_group" "project_rg" {
   name     = local.rg_name
   location = var.location

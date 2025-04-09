@@ -22,7 +22,8 @@ dependencies {
     implementation("com.h2database:h2") // Embedded H2 database for local development
     implementation("org.flywaydb:flyway-core")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
-
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 

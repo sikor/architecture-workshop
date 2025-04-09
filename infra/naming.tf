@@ -18,5 +18,6 @@ locals {
   events_app_name       = "${local.short_name}-events-wa"
   events_postgres_server_name  = "${local.short_name}-events-pgs"
   events_postgres_db_name  = "${local.short_name}-events-pgdb"
+  events_ad_name = "${local.short_name}-events-ad"
 
 }

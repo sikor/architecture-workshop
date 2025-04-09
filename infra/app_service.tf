@@ -32,6 +32,9 @@ resource "azurerm_linux_web_app" "events_app" {
     "DATABASE_URL" = azurerm_postgresql_flexible_server.events_db.fqdn
     "POSTGRES_PASSWORD" = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.pg_password.id})"
     "SPRING_PROFILES_ACTIVE" = "cloud"
+    "AD_CLIENT_ID" = azuread_application.events_app_ad.client_id
+    "TENANT_ID" = data.azurerm_client_config.current.tenant_id
+    "AD_CLIENT_SECRET" = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.event_app_ad_client_secret.id})"
   }
 }
 
@@ -42,4 +45,26 @@ resource "azurerm_key_vault_access_policy" "app_service_policy" {
   object_id = azurerm_linux_web_app.events_app.identity[0].principal_id
 
   secret_permissions = ["Get"]
+}
+
+resource "azuread_application" "events_app_ad" {
+  display_name = local.events_ad_name
+  sign_in_audience = "AzureADMyOrg"
+
+  web {
+    redirect_uris = [
+      "${azurerm_linux_web_app.events_app.default_hostname}/login/oauth2/code/azure"
+    ]
+  }
+}
+
+resource "azuread_application_password" "events_app_ad_secret" {
+  application_id = azuread_application.events_app_ad.object_id
+  display_name          = "${local.events_ad_name}-secret"
+}
+
+resource "azurerm_key_vault_secret" "event_app_ad_client_secret" {
+  name         = "${local.events_ad_name}-secret"
+  value        = azuread_application_password.events_app_ad_secret.value
+  key_vault_id = azurerm_key_vault.project_kv.id
 }

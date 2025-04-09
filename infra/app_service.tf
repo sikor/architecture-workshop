@@ -53,7 +53,7 @@ resource "azuread_application" "events_app_ad" {
 
   web {
     redirect_uris = [
-      "${azurerm_linux_web_app.events_app.default_hostname}/login/oauth2/code/azure"
+
     ]
   }
 }

@@ -6,6 +6,10 @@ on:
       - main
       - 'feature/**'
 
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   terraform-build-deploy:
     name: Terraform Plan & Apply, Build, Deploy

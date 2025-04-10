@@ -69,3 +69,22 @@ resource "azurerm_key_vault_secret" "event_app_ad_client_secret" {
   value        = azuread_application_password.events_app_ad_secret.value
   key_vault_id = azurerm_key_vault.project_kv.id
 }
+
+resource "azurerm_monitor_diagnostic_setting" "event_app_logs" {
+  name               = "${local.events_app_name}-logs"
+  target_resource_id = azurerm_linux_web_app.events_app.id
+  log_analytics_workspace_id = azurerm_log_analytics_workspace.log_analytics.id
+
+  enabled_log {
+    category = "AppServiceConsoleLogs"
+  }
+
+  enabled_log {
+    category = "AppServiceHTTPLogs"
+  }
+
+  metric {
+    category = "AllMetrics"
+    enabled  = true
+  }
+}

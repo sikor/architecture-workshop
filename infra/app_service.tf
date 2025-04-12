@@ -54,7 +54,7 @@ resource "azuread_application" "events_app_ad" {
 
   web {
     redirect_uris = [
-      "https://${azurerm_linux_web_app.events_app.default_hostname}/swagger-ui/oauth2-redirect.html"
+      local.events_app_redirect_uri
     ]
   }
 }

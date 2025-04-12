@@ -20,4 +20,6 @@ locals {
   events_postgres_db_name  = "${local.short_name}-events-pgdb"
   events_ad_name = "${local.short_name}-events-ad"
 
+  events_app_service_hostname = "${local.events_app_name}.azurewebsites.net"
+  events_app_redirect_uri         = "https://${local.events_app_service_hostname}/swagger-ui/oauth2-redirect.html"
 }

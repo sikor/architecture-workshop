@@ -37,6 +37,7 @@ resource "azurerm_linux_web_app" "events_app" {
     "SWAGGER_AD_CLIENT_ID" = azuread_application.swagger_ui_client.client_id
     "TENANT_ID" = data.azurerm_client_config.current.tenant_id
     "AD_CLIENT_SECRET" = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.event_app_ad_client_secret.id})"
+    "APP_IDENTIFIER_URI" = local.events_app_identifier_uri
   }
 }
 
@@ -59,7 +60,7 @@ resource "azuread_application" "events_app_ad" {
   display_name     = "${local.short_name}-events-api"
   sign_in_audience = "AzureADMyOrg"
 
-  identifier_uris = ["api://${azuread_application.events_app_ad.client_id}"]
+  identifier_uris = [local.events_app_identifier_uri]
 
   api {
     requested_access_token_version = 2

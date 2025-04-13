@@ -22,4 +22,5 @@ locals {
 
   events_app_service_hostname = "${local.events_app_name}.azurewebsites.net"
   events_app_redirect_uri         = "https://${local.events_app_service_hostname}/swagger-ui/oauth2-redirect.html"
+  events_app_identifier_uri = "api://${local.events_app_name}"
 }

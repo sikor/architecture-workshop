@@ -20,6 +20,9 @@ public class SecurityConfig {
     @Value("${AD_CLIENT_ID}")
     private String clientId;
 
+    @Value("${APP_IDENTIFIER_URI}")
+    private String appIdentifierUri;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -46,7 +49,7 @@ public class SecurityConfig {
                                                 .authorizationCode(new OAuthFlow()
                                                         .authorizationUrl("https://login.microsoftonline.com/" + tenantId + "/oauth2/v2.0/authorize")
                                                         .tokenUrl("https://login.microsoftonline.com/" + tenantId + "/oauth2/v2.0/token")
-                                                        .scopes(new Scopes().addString("api://" + clientId + "/access_as_user", "Access Events API"))
+                                                        .scopes(new Scopes().addString(appIdentifierUri + "/access_as_user", "Access Events API"))
                                                 )
                                         )
                         )

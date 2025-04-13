@@ -63,7 +63,6 @@ resource "azuread_application" "events_app_ad" {
       admin_consent_description  = "Allow access to the Events API"
       admin_consent_display_name = "Access Events API"
       id                         = uuid()
-      is_enabled                 = true
       type                       = "User"
       value                      = "access_as_user"
     }

@@ -93,12 +93,11 @@ resource "azuread_application" "swagger_ui_client" {
   required_resource_access {
     resource_app_id = azuread_application.events_app_ad.client_id
 
-    resource_access = [
+    resource_access =
       {
         id   = azuread_application.events_app_ad.api.oauth2_permission_scope[0].id
         type = "Scope"
       }
-    ]
   }
 }
 

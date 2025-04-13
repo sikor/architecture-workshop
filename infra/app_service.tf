@@ -34,6 +34,7 @@ resource "azurerm_linux_web_app" "events_app" {
     "POSTGRES_PASSWORD" = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.pg_password.id})"
     "SPRING_PROFILES_ACTIVE" = "cloud"
     "AD_CLIENT_ID" = azuread_application.events_app_ad.client_id
+    "SWAGGER_AD_CLIENT_ID" = azuread_application.swagger_ui_client.client_id
     "TENANT_ID" = data.azurerm_client_config.current.tenant_id
     "AD_CLIENT_SECRET" = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.event_app_ad_client_secret.id})"
   }
@@ -48,15 +49,62 @@ resource "azurerm_key_vault_access_policy" "app_service_policy" {
   secret_permissions = ["Get"]
 }
 
+# ---------------------------------------------
+# API App Registration (resource server)
+# ---------------------------------------------
 resource "azuread_application" "events_app_ad" {
-  display_name = local.events_ad_name
+  display_name     = "${local.short_name}-events-api"
+  sign_in_audience = "AzureADMyOrg"
+
+  api {
+    requested_access_token_version = 2
+
+    oauth2_permission_scope {
+      admin_consent_description  = "Allow access to the Events API"
+      admin_consent_display_name = "Access Events API"
+      id                         = uuid()
+      is_enabled                 = true
+      type                       = "User"
+      value                      = "access_as_user"
+    }
+  }
+}
+
+resource "azuread_service_principal" "events_app_sp" {
+  client_id = azuread_application.events_app_ad.client_id
+}
+
+# ---------------------------------------------
+# Swagger UI Client App Registration (public client)
+# ---------------------------------------------
+resource "azuread_application" "swagger_ui_client" {
+  display_name     = "${local.short_name}-swagger-client"
   sign_in_audience = "AzureADMyOrg"
 
   web {
     redirect_uris = [
       local.events_app_redirect_uri
     ]
+    implicit_grant {
+      access_token_issuance_enabled = true
+      id_token_issuance_enabled     = true
+    }
   }
+
+  required_resource_access {
+    resource_app_id = azuread_application.events_app_ad.client_id
+
+    resource_access = [
+      {
+        id   = azuread_application.events_app_ad.api.oauth2_permission_scope[0].id
+        type = "Scope"
+      }
+    ]
+  }
+}
+
+resource "azuread_service_principal" "swagger_ui_sp" {
+  client_id = azuread_application.swagger_ui_client.client_id
 }
 
 resource "azuread_application_password" "events_app_ad_secret" {

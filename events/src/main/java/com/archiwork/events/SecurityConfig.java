@@ -46,7 +46,7 @@ public class SecurityConfig {
                                                 .authorizationCode(new OAuthFlow()
                                                         .authorizationUrl("https://login.microsoftonline.com/" + tenantId + "/oauth2/v2.0/authorize")
                                                         .tokenUrl("https://login.microsoftonline.com/" + tenantId + "/oauth2/v2.0/token")
-                                                        .scopes(new Scopes().addString("api://" + clientId + "/.default", "Access API"))
+                                                        .scopes(new Scopes().addString("api://" + clientId + "/access_as_user", "Access Events API"))
                                                 )
                                         )
                         )

@@ -59,6 +59,8 @@ resource "azuread_application" "events_app_ad" {
   display_name     = "${local.short_name}-events-api"
   sign_in_audience = "AzureADMyOrg"
 
+  identifier_uris = ["api://${azuread_application.events_app_ad.client_id}"]
+
   api {
     requested_access_token_version = 2
 

@@ -52,6 +52,9 @@ resource "azurerm_key_vault_access_policy" "app_service_policy" {
 # ---------------------------------------------
 # API App Registration (resource server)
 # ---------------------------------------------
+
+resource "random_uuid" "access_as_user_scope_id" {}
+
 resource "azuread_application" "events_app_ad" {
   display_name     = "${local.short_name}-events-api"
   sign_in_audience = "AzureADMyOrg"
@@ -62,7 +65,7 @@ resource "azuread_application" "events_app_ad" {
     oauth2_permission_scope {
       admin_consent_description  = "Allow access to the Events API"
       admin_consent_display_name = "Access Events API"
-      id                         = uuid()
+      id                         = random_uuid.access_as_user_scope_id.result
       type                       = "User"
       value                      = "access_as_user"
     }
@@ -94,7 +97,7 @@ resource "azuread_application" "swagger_ui_client" {
     resource_app_id = azuread_application.events_app_ad.client_id
 
     resource_access {
-        id   = azuread_application.events_app_ad.api[0].oauth2_permission_scope[0].id
+        id   = random_uuid.access_as_user_scope_id.result
         type = "Scope"
     }
   }

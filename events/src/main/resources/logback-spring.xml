@@ -1,9 +1,16 @@
 <configuration>
-    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <target>System.out</target>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
     </appender>
 
-    <root level="INFO">
-        <appender-ref ref="console" />
+    <root level="DEBUG">
+        <appender-ref ref="STDOUT"/>
     </root>
+
+    <springProfile name="cloud">
+        <include resource="logback-spring-cloud.xml"/>
+    </springProfile>
 </configuration>

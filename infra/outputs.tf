@@ -7,3 +7,7 @@ output "events_app_url" {
   description = "The default hostname (URL) of the Events Azure App Service"
   value       = azurerm_linux_web_app.events_app.default_hostname
 }
+
+output "current_terraform_oid" {
+  value = data.azurerm_client_config.current.object_id
+}

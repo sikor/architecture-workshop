@@ -1,12 +1,13 @@
 provider "azurerm" {
   features {}
-  use_cli = true
+  use_cli         = true
   subscription_id = var.subscription_id
 }
 
 variable "subscription_id" {
   description = "Azure subscription ID"
   type        = string
+  default     = "ba90069d-9e46-4163-9570-1b2bd4db55d4"
 }
 
 variable "prefix" {
@@ -20,7 +21,8 @@ resource "random_id" "sa_suffix" {
 }
 
 locals {
-  storage_account_name = lower(substr("${var.prefix}0${random_id.sa_suffix.hex}", 0, 24))  # must be ≤ 24 chars, no dashes
+  storage_account_name = lower(substr("${var.prefix}0backendsa", 0, 24))
+  # ${random_id.sa_suffix.hex} must be ≤ 24 chars, no dashes
 }
 
 
@@ -39,6 +41,6 @@ resource "azurerm_storage_account" "tfstate" {
 
 resource "azurerm_storage_container" "tfstate" {
   name                  = "tfstate"
-  storage_account_id   = azurerm_storage_account.tfstate.id
+  storage_account_id    = azurerm_storage_account.tfstate.id
   container_access_type = "private"
 }

@@ -6,7 +6,7 @@ resource "random_password" "pg_password" {
 resource "azurerm_key_vault_secret" "pg_password" {
   name         = "postgres-password"
   value        = random_password.pg_password.result
-  key_vault_id = azurerm_key_vault.project_kv.id
+  key_vault_id = module.key_vault.key_vault_id
 }
 
 resource "azurerm_postgresql_flexible_server" "events_db" {

@@ -43,7 +43,7 @@ resource "azurerm_linux_web_app" "events_app" {
 }
 
 resource "azurerm_key_vault_access_policy" "app_service_policy" {
-  key_vault_id = azurerm_key_vault.project_kv.id
+  key_vault_id = module.key_vault.key_vault_id
 
   tenant_id = data.azurerm_client_config.current.tenant_id
   object_id = azurerm_linux_web_app.events_app.identity[0].principal_id
@@ -119,7 +119,7 @@ resource "azuread_application_password" "events_app_ad_secret" {
 resource "azurerm_key_vault_secret" "event_app_ad_client_secret" {
   name         = "${local.events_ad_name}-secret"
   value        = azuread_application_password.events_app_ad_secret.value
-  key_vault_id = azurerm_key_vault.project_kv.id
+  key_vault_id = module.key_vault.key_vault_id
 }
 
 resource "azurerm_monitor_diagnostic_setting" "event_app_logs" {

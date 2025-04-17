@@ -29,6 +29,7 @@ jobs:
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
+
       - name: Print identity info
         run: |
           echo "== AZ ACCOUNT =="
@@ -36,12 +37,19 @@ jobs:
           echo "== SP OBJECT ID =="
           appId=$(az account show --query user.name -o tsv)
           az ad sp show --id $appId --query "{objectId:objectId, displayName:displayName}"
+
       - name: Terraform Init
         run: terraform init -backend-config=${{ vars.TF_BACKEND_CONFIG }}
         working-directory: infra
 
+      - name: Terraform Apply Key Vault
+        run: |
+          terraform plan -out=tfplan.key_vault -target=module.key_vault -var-file=${{ vars.TF_VARS_CONFIG }}
+          terraform apply tfplan.key_vault
+        working-directory: infra
+
       - name: Terraform Plan
-        run: terraform plan -target=azurerm_key_vault_access_policy.admin_access -out=tfplan -var-file=${{ vars.TF_VARS_CONFIG }}
+        run: terraform plan -out=tfplan -var-file=${{ vars.TF_VARS_CONFIG }}
         working-directory: infra
 
       - name: Terraform Apply

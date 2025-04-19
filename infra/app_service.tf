@@ -87,14 +87,10 @@ resource "azuread_application" "swagger_ui_client" {
   display_name     = "${local.short_name}-swagger-client"
   sign_in_audience = "AzureADMyOrg"
 
-  web {
+  single_page_application {
     redirect_uris = [
       local.events_app_redirect_uri
     ]
-    implicit_grant {
-      access_token_issuance_enabled = true
-      id_token_issuance_enabled     = true
-    }
   }
 
   required_resource_access {

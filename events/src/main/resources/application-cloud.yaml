@@ -13,7 +13,7 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: https://login.microsoftonline.com/${TENANT_ID}/v2.0
-          audience: ${APP_IDENTIFIER_URI}
+          audience: ${AD_CLIENT_ID}
 springdoc:
   swagger-ui:
     oauth:

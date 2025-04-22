@@ -19,6 +19,6 @@ springdoc:
       use-pkce-with-authorization-code-grant: true
 events:
   oauth-flow:
-    authorizationUrl: https://localhost:8081/authorize
-    tokenUrl: https://localhost:8081/oauth2/v2.0/token
+    authorizationUrl: http://localhost:8081/realms/events-realm/protocol/openid-connect/auth
+    tokenUrl: http://localhost:8081/realms/events-realm/protocol/openid-connect/token
     scope: EVENTS_APP/access_as_user

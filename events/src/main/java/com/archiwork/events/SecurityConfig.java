@@ -3,7 +3,6 @@ package com.archiwork.events;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.security.*;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,14 +13,11 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Value("${TENANT_ID}")
-    private String tenantId;
+    private final OAuthFlowConfig oAuthFlowConfig;
 
-    @Value("${AD_CLIENT_ID}")
-    private String clientId;
-
-    @Value("${APP_IDENTIFIER_URI}")
-    private String appIdentifierUri;
+    public SecurityConfig(OAuthFlowConfig oAuthFlowConfig){
+        this.oAuthFlowConfig = oAuthFlowConfig;
+    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -47,9 +43,9 @@ public class SecurityConfig {
                                         .type(SecurityScheme.Type.OAUTH2)
                                         .flows(new OAuthFlows()
                                                 .authorizationCode(new OAuthFlow()
-                                                        .authorizationUrl("https://login.microsoftonline.com/" + tenantId + "/oauth2/v2.0/authorize")
-                                                        .tokenUrl("https://login.microsoftonline.com/" + tenantId + "/oauth2/v2.0/token")
-                                                        .scopes(new Scopes().addString(appIdentifierUri + "/access_as_user", "Access Events API"))
+                                                        .authorizationUrl(oAuthFlowConfig.authorizationUrl())
+                                                        .tokenUrl(oAuthFlowConfig.tokenUrl())
+                                                        .scopes(new Scopes().addString(oAuthFlowConfig.scope(), "Access Events API"))
                                                 )
                                         )
                         )

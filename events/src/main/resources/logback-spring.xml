@@ -6,9 +6,15 @@
         </encoder>
     </appender>
 
+
     <root level="INFO">
         <appender-ref ref="STDOUT"/>
     </root>
+
+    <logger name="org.springframework.security" level="DEBUG" />
+    <logger name="org.springframework.security.oauth2" level="DEBUG" />
+    <logger name="org.springframework.web" level="DEBUG" />
+
 
     <springProfile name="cloud">
         <include resource="logback-spring-cloud.xml"/>

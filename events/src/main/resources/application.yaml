@@ -21,4 +21,4 @@ events:
   oauth-flow:
     authorizationUrl: http://localhost:8081/realms/events-realm/protocol/openid-connect/auth
     tokenUrl: http://localhost:8081/realms/events-realm/protocol/openid-connect/token
-    scope: EVENTS_APP/access_as_user
+    scope: events_api_user

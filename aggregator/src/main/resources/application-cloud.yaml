@@ -8,19 +8,6 @@ spring:
     hibernate:
       ddl-auto: update
     database-platform: org.hibernate.dialect.PostgreSQLDialect
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: https://login.microsoftonline.com/${TENANT_ID}/v2.0
-          audience: ${AD_CLIENT_ID}
-springdoc:
-  swagger-ui:
-    oauth:
-      client-id: ${SWAGGER_AD_CLIENT_ID}
-      use-pkce-with-authorization-code-grant: true
-events:
-  oauth-flow:
-    authorizationUrl: https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/authorize
-    tokenUrl: https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/token
-    scope: ${APP_IDENTIFIER_URI}/access_as_user
+commands:
+  api:
+    base-url: https://archiwork-events-wa.azurewebsites.net

@@ -1,14 +1,12 @@
 package com.archiwork.events.commands.left;
 
-import com.archiwork.events.commands.right.Command;
+import com.archiwork.events.commands.right.AddCommand;
 import com.archiwork.events.commands.right.CommandDao;
+import com.archiwork.events.commands.right.GetCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -25,8 +23,15 @@ public class CommandController {
     }
 
     @PostMapping
-    public ResponseEntity<Long> addCommands(@RequestBody List<Command> commands) {
+    public ResponseEntity<Long> addCommands(@RequestBody List<AddCommand> commands) {
         List<Number> result = commandDao.addCommands(commands);
         return ResponseEntity.ok(result.getLast().longValue());
+    }
+
+    @GetMapping
+    public List<GetCommand> getCommandsSinceId(
+            @RequestParam("sinceId") Long sinceId,
+            @RequestParam("limit") int limit) {
+        return commandDao.findByIdGreaterThanOrderByIdAsc(sinceId, limit);
     }
 }

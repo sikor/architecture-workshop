@@ -1,9 +1,10 @@
 package com.archiwork.events.commands.right;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
-public record Command(
-        LocalDateTime commandDate,
+public record GetCommand(
+        Long id,
+        Instant commandDate,
         String mapId,
         String mapKey,
         String mapValue

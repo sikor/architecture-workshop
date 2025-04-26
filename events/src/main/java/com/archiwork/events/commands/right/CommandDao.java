@@ -8,6 +8,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class CommandDao {
@@ -18,7 +19,7 @@ public class CommandDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public List<Number> addCommands(List<Command> commands) {
+    public List<Number> addCommands(List<AddCommand> commands) {
         String sql = """
                 INSERT INTO commands (command_date, map_id, map_key, map_value)
                 VALUES (:commandDate, :mapId, :mapKey, :mapValue)
@@ -38,5 +39,27 @@ public class CommandDao {
         return kh.getKeyList().stream()
                 .map(m -> (Number) m.values().stream().findFirst().get())
                 .toList();
+    }
+
+    public List<GetCommand> findByIdGreaterThanOrderByIdAsc(long sinceId, int limit) {
+        String sql = """
+                SELECT id, command_date, map_id, map_key, map_value
+                FROM commands
+                WHERE id > :sinceId
+                ORDER BY id ASC
+                LIMIT :limit
+                """;
+
+        MapSqlParameterSource params = new MapSqlParameterSource()
+                .addValue("sinceId", sinceId)
+                .addValue("limit", limit);
+
+        return jdbcTemplate.query(sql, params, (rs, rowNum) -> new GetCommand(
+                rs.getLong("id"),
+                rs.getTimestamp("command_date").toInstant(),
+                rs.getString("map_id"),
+                rs.getString("map_key"),
+                rs.getString("map_value")
+        ));
     }
 }

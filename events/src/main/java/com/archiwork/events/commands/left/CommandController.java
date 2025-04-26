@@ -3,6 +3,7 @@ package com.archiwork.events.commands.left;
 import com.archiwork.events.commands.right.AddCommand;
 import com.archiwork.events.commands.right.CommandDao;
 import com.archiwork.events.commands.right.GetCommand;
+import com.archiwork.events.cursors.right.CursorDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +16,11 @@ import java.util.List;
 public class CommandController {
 
     private final CommandDao commandDao;
+    private final CursorDao cursorDao;
     private static final Logger log = LoggerFactory.getLogger(CommandController.class);
 
-    public CommandController(CommandDao commandDao) {
-        log.info("CommandController: Hello, world!");
+    public CommandController(CommandDao commandDao, CursorDao cursorDao) {
+        this.cursorDao = cursorDao;
         this.commandDao = commandDao;
     }
 
@@ -30,8 +32,10 @@ public class CommandController {
 
     @GetMapping
     public List<GetCommand> getCommandsSinceId(
+            @RequestParam("serviceName") String serviceName,
             @RequestParam("sinceId") Long sinceId,
             @RequestParam("limit") int limit) {
+        cursorDao.setCursorIndex(serviceName, sinceId);
         return commandDao.findByIdGreaterThanOrderByIdAsc(sinceId, limit);
     }
 }

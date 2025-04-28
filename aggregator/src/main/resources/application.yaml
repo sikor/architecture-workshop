@@ -9,3 +9,7 @@ spring:
 commands:
   api:
     base-url: http://localhost:8080
+polling:
+  workers: 1
+  interval:
+    millis: 1000

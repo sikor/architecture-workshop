@@ -31,7 +31,7 @@ public class CommandPollerWorker {
         this.mapValueDao = mapValueDao;
     }
 
-    @Scheduled(fixedRateString = "${polling.interval.millis:100}")
+    @Scheduled(fixedRateString = "${polling.interval.millis:1000}")
     public void pollCommands() {
         List<Command> commands = commandsClient.acknowledgeCommands(toAcknowledge, limit);
         mapValueDao.insertBatch(commands.stream()

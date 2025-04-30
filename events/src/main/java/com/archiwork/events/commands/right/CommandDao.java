@@ -8,11 +8,14 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 @Repository
 public class CommandDao {
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
+    private Consumer<List<GetCommand>> onNewCommand;
+
 
     public CommandDao(NamedParameterJdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -60,5 +63,13 @@ public class CommandDao {
                 rs.getString("map_key"),
                 rs.getString("map_value")
         ));
+    }
+
+    public void registerCallback(Consumer<List<GetCommand>> callback) {
+        this.onNewCommand = callback;
+    }
+
+    public void unregisterCallback() {
+        onNewCommand = null;
     }
 }

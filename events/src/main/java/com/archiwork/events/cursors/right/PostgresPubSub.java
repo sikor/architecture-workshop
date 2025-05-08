@@ -1,7 +1,5 @@
 package com.archiwork.events.cursors.right;
 
-import jakarta.annotation.PostConstruct;
-import jakarta.annotation.PreDestroy;
 import org.postgresql.PGConnection;
 import org.postgresql.PGNotification;
 import org.slf4j.Logger;
@@ -15,33 +13,17 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 @Component
-public class PostgresPubSub {
+public class PostgresPubSub extends ReliableTask {
 
     private static final Logger log = LoggerFactory.getLogger(PostgresPubSub.class);
 
     private final DataSource dataSource;
     private final ApplicationEventPublisher eventPublisher;
-    private volatile boolean running = true;
-    private Thread listenerThread;
 
     public PostgresPubSub(DataSource dataSource, ApplicationEventPublisher eventPublisher) {
+        super("PostgresPubSub");
         this.dataSource = dataSource;
         this.eventPublisher = eventPublisher;
-    }
-
-    @PostConstruct
-    public void start() {
-        listenerThread = new Thread(this::listenLoopWithReconnect, "postgres-pubsub-listener");
-        listenerThread.setDaemon(true);
-        listenerThread.start();
-    }
-
-    @PreDestroy
-    public void stop() {
-        running = false;
-        if (listenerThread != null) {
-            listenerThread.interrupt();
-        }
     }
 
     public void publish(String message) {
@@ -53,22 +35,8 @@ public class PostgresPubSub {
         }
     }
 
-    private void listenLoopWithReconnect() {
-        int retryDelay = 1000;
-        while (running) {
-            try {
-                listenLoop();
-                break;
-            } catch (SQLException e) {
-                if (!running) break;
-                log.warn("PostgreSQL listen connection lost, retrying in {}ms", retryDelay, e);
-                sleepSilently(retryDelay);
-                retryDelay = Math.min(retryDelay * 2, 30_000);
-            }
-        }
-    }
-
-    private void listenLoop() throws SQLException {
+    @Override
+    protected void runWithResources() throws Exception {
         try (Connection conn = dataSource.getConnection();
              Statement stmt = conn.createStatement()) {
 
@@ -76,7 +44,7 @@ public class PostgresPubSub {
             stmt.execute("LISTEN newCommands");
             log.info("Connected and LISTENING on channel 'newCommands'");
 
-            while (running) {
+            while (isRunning()) {
                 PGNotification[] notifications = pgConn.getNotifications(5000);
                 if (notifications != null) {
                     for (PGNotification notification : notifications) {
@@ -86,14 +54,6 @@ public class PostgresPubSub {
                     }
                 }
             }
-        }
-    }
-
-    private void sleepSilently(long millis) {
-        try {
-            Thread.sleep(millis);
-        } catch (InterruptedException ignored) {
-            Thread.currentThread().interrupt();
         }
     }
 }

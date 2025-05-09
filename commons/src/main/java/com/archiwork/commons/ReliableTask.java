@@ -1,4 +1,4 @@
-package com.archiwork.events.cursors.right;
+package com.archiwork.commons;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

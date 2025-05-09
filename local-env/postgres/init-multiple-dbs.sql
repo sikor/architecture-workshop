@@ -1,2 +1,3 @@
 CREATE DATABASE keycloak;
 CREATE DATABASE events;
+CREATE DATABASE aggregator;

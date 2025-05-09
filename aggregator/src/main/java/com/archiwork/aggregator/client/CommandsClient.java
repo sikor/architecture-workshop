@@ -16,11 +16,11 @@ public class CommandsClient {
         this.restClient = restClient;
     }
 
-    public List<Command> acknowledgeCommands(long sinceId, int limit) {
-        ResponseEntity<List<Command>> response = restClient.get()
+    public List<Command> acknowledgeCommands(String serviceName, long sinceId, int limit) {
+        ResponseEntity<List<Command>> response = restClient.post()
                 .uri(uriBuilder -> uriBuilder
                         .path("/cursors")
-                        .queryParam("serviceName", "aggregator")
+                        .queryParam("serviceName", serviceName)
                         .queryParam("sinceId", sinceId)
                         .queryParam("limit", limit)
                         .build())

@@ -7,6 +7,8 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Timestamp;
+import java.sql.Types;
 import java.util.List;
 
 @Repository
@@ -26,7 +28,7 @@ public class CommandDao {
 
         SqlParameterSource[] batchParams = commands.stream()
                 .map(command -> new MapSqlParameterSource()
-                        .addValue("commandDate", command.commandDate())
+                        .addValue("commandDate", Timestamp.from(command.commandDate()))
                         .addValue("mapId", command.mapId())
                         .addValue("mapKey", command.mapKey())
                         .addValue("mapValue", command.mapValue()))

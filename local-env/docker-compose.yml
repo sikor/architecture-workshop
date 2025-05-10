@@ -22,7 +22,7 @@ services:
     restart: unless-stopped
 
   postgresql:
-    image: bitnami/postgresql:15
+    image: bitnami/postgresql:17
     environment:
       POSTGRESQL_USERNAME: pgadmin
       POSTGRESQL_PASSWORD: pgadmin

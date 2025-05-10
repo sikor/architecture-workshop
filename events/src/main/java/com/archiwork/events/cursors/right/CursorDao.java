@@ -36,11 +36,14 @@ public class CursorDao {
                 .addValue("cursorIndex", cursorIndex);
 
         String sql = """
-                MERGE INTO cursors (service_name, cursor_index)
-                KEY (service_name)
-                VALUES (:serviceName, :cursorIndex)
-                """;
+        INSERT INTO cursors (service_name, cursor_index)
+        VALUES (:serviceName, :cursorIndex)
+        ON CONFLICT (service_name)
+        DO UPDATE SET
+            cursor_index = EXCLUDED.cursor_index
+        """;
 
         jdbcTemplate.update(sql, params);
     }
+
 }

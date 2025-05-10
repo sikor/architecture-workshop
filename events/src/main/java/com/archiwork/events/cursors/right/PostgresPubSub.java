@@ -22,7 +22,7 @@ public class PostgresPubSub extends ReliableTask {
     private final ApplicationEventPublisher eventPublisher;
 
     public PostgresPubSub(DataSource dataSource, ApplicationEventPublisher eventPublisher) {
-        super("PostgresPubSub");
+        super("PostgresPubSub", true);
         this.dataSource = dataSource;
         this.eventPublisher = eventPublisher;
     }

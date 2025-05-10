@@ -25,12 +25,27 @@
       "directAccessGrantsEnabled": true,
       "authorizationServicesEnabled": true,
       "webOrigins": []
+    },
+    {
+      "clientId": "aggregator-client",
+      "secret": "aggregator-secret",
+      "publicClient": false,
+      "redirectUris": [],
+      "standardFlowEnabled": false,
+      "serviceAccountsEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "authorizationServicesEnabled": false,
+      "webOrigins": []
     }
   ],
   "users": [
     {
       "username": "testuser",
       "enabled": true,
+      "emailVerified": true,
+      "email": "testuser@example.com",
+      "firstName": "Test",
+      "lastName": "User",
       "credentials": [
         {
           "type": "password",

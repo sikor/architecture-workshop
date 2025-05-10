@@ -23,7 +23,7 @@ public class CommandPoller extends ReliableTask {
     private volatile long toAcknowledge = -1;
 
     protected CommandPoller(CommandsClient commandsClient, MapValueDao mapValueDao) {
-        super("command-poller");
+        super("command-poller", false);
         this.commandsClient = commandsClient;
         this.mapValueDao = mapValueDao;
     }

@@ -3,7 +3,6 @@ package com.archiwork.aggregator.client;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
-import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -17,7 +16,7 @@ public class CommandsClient {
     }
 
     public List<Command> acknowledgeCommands(String serviceName, long sinceId, int limit) {
-        ResponseEntity<List<Command>> response = restClient.post()
+        return restClient.post()
                 .uri(uriBuilder -> uriBuilder
                         .path("/cursors")
                         .queryParam("serviceName", serviceName)
@@ -26,7 +25,5 @@ public class CommandsClient {
                         .build())
                 .retrieve()
                 .body(new ParameterizedTypeReference<>() {});
-
-        return response.getBody();
     }
 }

@@ -11,9 +11,9 @@ public abstract class ReliableTask implements InitializingBean, DisposableBean {
     private volatile boolean running = true;
     private final Logger logger = LoggerFactory.getLogger(ReliableTask.class);
 
-    protected ReliableTask(String threadName) {
+    protected ReliableTask(String threadName, boolean daemon) {
         this.thread = new Thread(this::run, threadName);
-        thread.setDaemon(true);
+        thread.setDaemon(daemon);
     }
 
     private void run() {

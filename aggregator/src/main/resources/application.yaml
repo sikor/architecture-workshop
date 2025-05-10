@@ -1,4 +1,6 @@
 spring:
+  main:
+    web-application-type: none
   datasource:
     url: jdbc:postgresql://localhost:5432/aggregator
     driver-class-name: org.postgresql.Driver
@@ -11,5 +13,8 @@ spring:
 commands:
   api:
     base-url: http://localhost:8080
+    client-id: aggregator-client
+    client-secret: aggregator-secret
+    token-uri: http://localhost:8081/realms/events-realm/protocol/openid-connect/token
 polling:
   limit: 1000

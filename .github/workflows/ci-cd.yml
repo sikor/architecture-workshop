@@ -60,6 +60,7 @@ jobs:
         id: tf_outputs
         run: |
           echo "events_app_name=$(terraform output -raw events_app_name)" >> "$GITHUB_OUTPUT"
+          echo "aggregator_app_name=$(terraform output -raw aggregator_app_name)" >> "$GITHUB_OUTPUT"
           echo "events_app_url=$(terraform output -raw events_app_url)" >> "$GITHUB_OUTPUT"
         working-directory: infra
 
@@ -75,15 +76,21 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
 
-      - name: Deploy to Azure App Service
+      - name: Deploy Events to Azure App Service
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ steps.tf_outputs.outputs.events_app_name }}
           package: "events/build/libs/*.jar"
 
+      - name: Deploy Aggregator to Azure App Service
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ steps.tf_outputs.outputs.aggregator_app_name }}
+          package: "aggregator/build/libs/*.jar"
+
       - name: Check App Health
-        run: | #TODO app address
-          for i in {1..10}; do
+        run: | 
+          for i in {1..60}; do
             STATUS=$(curl -s -o /dev/null -w "%{http_code}" ${{ steps.tf_outputs.outputs.events_app_url }}/actuator/health) 
             echo "Health check HTTP status: $STATUS"
             if [ "$STATUS" -eq 200 ]; then

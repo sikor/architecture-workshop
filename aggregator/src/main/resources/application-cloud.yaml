@@ -1,4 +1,6 @@
 spring:
+  main:
+    web-application-type: none
   datasource:
     url: jdbc:postgresql://${DATABASE_URL}:5432/${DATABASE_NAME}
     driver-class-name: org.postgresql.Driver
@@ -10,4 +12,9 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 commands:
   api:
-    base-url: https://archiwork-events-wa.azurewebsites.net
+    base-url: ${EVENTS_API_BASE_URL}
+    client-id: ${AD_CLIENT_ID}
+    client-secret: ${AD_CLIENT_SECRET}
+    token-uri: https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/token
+polling:
+  limit: 1000

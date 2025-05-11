@@ -35,6 +35,13 @@ resource "azurerm_postgresql_flexible_server_database" "events_db_instance" {
   collation = "en_US.utf8"
 }
 
+resource "azurerm_postgresql_flexible_server_database" "aggregator_db_instance" {
+  name      = local.aggregator_postgres_db_name
+  server_id = azurerm_postgresql_flexible_server.events_db.id
+  charset   = "UTF8"
+  collation = "en_US.utf8"
+}
+
 resource "azurerm_postgresql_flexible_server_firewall_rule" "allow_azure_services" {
   name                = "AllowAzureServices"
   server_id = azurerm_postgresql_flexible_server.events_db.id

@@ -24,6 +24,11 @@ variable "admin_object_id" {
   type        = string
 }
 
+variable "portal_access_object_id" {
+  description = "Object ID of the user that will access via UI"
+  type        = string
+}
+
 
 resource "azurerm_key_vault" "project_kv" {
   name                        = var.key_vault_name
@@ -46,6 +51,16 @@ resource "azurerm_key_vault_access_policy" "admin_access" {
     "List",
     "Set",
   ]
+}
+
+resource "azurerm_key_vault_access_policy" "portal_access" {
+  key_vault_id = azurerm_key_vault.project_kv.id
+  tenant_id    = var.tenant_id
+  object_id    = var.portal_access_object_id
+
+  secret_permissions = ["get", "list", "set"]
+  key_permissions    = ["get", "list", "set"]
+  certificate_permissions = ["get", "list", "set"]
 }
 
 output "key_vault_id" {

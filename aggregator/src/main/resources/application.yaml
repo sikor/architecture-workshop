@@ -16,5 +16,7 @@ commands:
     client-id: aggregator-client
     client-secret: aggregator-secret
     token-uri: http://localhost:8081/realms/events-realm/protocol/openid-connect/token
+    scopes:
+      - events_api_user
 polling:
   limit: 1000

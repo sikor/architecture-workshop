@@ -23,6 +23,7 @@ module key_vault {
   resource_group_name  = azurerm_resource_group.project_rg.name
   tenant_id            = data.azurerm_client_config.current.tenant_id
   admin_object_id      = data.azurerm_client_config.current.object_id
+  portal_access_object_id = "f066046b-9848-4fe9-9f91-ff0382ec45ac"
 }
 
 

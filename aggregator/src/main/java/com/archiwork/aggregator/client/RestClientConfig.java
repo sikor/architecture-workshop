@@ -11,6 +11,8 @@ import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.web.client.RestClient;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.util.List;
+
 @Configuration
 public class RestClientConfig {
 
@@ -18,13 +20,15 @@ public class RestClientConfig {
     public ClientRegistrationRepository clientRegistrationRepository(
             @Value("${commands.api.token-uri}") String tokenUri,
             @Value("${commands.api.client-id}") String clientId,
-            @Value("${commands.api.client-secret}") String clientSecret) {
+            @Value("${commands.api.client-secret}") String clientSecret,
+            @Value("${commands.api.scopes}") List<String> scopes) {
         ClientRegistration registration = ClientRegistration
                 .withRegistrationId("events")
                 .tokenUri(tokenUri)
                 .clientId(clientId)
                 .clientSecret(clientSecret)
                 .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
+                .scope(scopes)
                 .build();
 
         return new InMemoryClientRegistrationRepository(registration);

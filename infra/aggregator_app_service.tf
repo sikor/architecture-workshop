@@ -38,6 +38,7 @@ resource "azurerm_linux_web_app" "aggregator_app" {
     "AD_CLIENT_SECRET" = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.aggregator_app_ad_client_secret.id})"
     "EVENTS_API_BASE_URL" = azurerm_linux_web_app.events_app.default_hostname
     "TENANT_ID" = data.azurerm_client_config.current.tenant_id
+    "EVENTS_APP_IDENTIFIER_URI" = local.events_app_identifier_uri
   }
 }
 

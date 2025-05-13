@@ -1,5 +1,6 @@
 package com.archiwork.aggregator.client;
 
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.oauth2.client.*;
@@ -14,21 +15,19 @@ import org.springframework.beans.factory.annotation.Value;
 import java.util.List;
 
 @Configuration
+@EnableConfigurationProperties(ApiProperties.class)
 public class RestClientConfig {
 
     @Bean
     public ClientRegistrationRepository clientRegistrationRepository(
-            @Value("${commands.api.token-uri}") String tokenUri,
-            @Value("${commands.api.client-id}") String clientId,
-            @Value("${commands.api.client-secret}") String clientSecret,
-            @Value("${commands.api.scopes}") List<String> scopes) {
+           ApiProperties props) {
         ClientRegistration registration = ClientRegistration
                 .withRegistrationId("events")
-                .tokenUri(tokenUri)
-                .clientId(clientId)
-                .clientSecret(clientSecret)
+                .tokenUri(props.tokenUri())
+                .clientId(props.clientId())
+                .clientSecret(props.clientSecret())
                 .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
-                .scope(scopes)
+                .scope(props.scopes())
                 .build();
 
         return new InMemoryClientRegistrationRepository(registration);

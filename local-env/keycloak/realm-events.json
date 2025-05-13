@@ -1,6 +1,14 @@
 {
   "realm": "events-realm",
   "enabled": true,
+  "clientScopes": [{
+    "name": "events_api_user",
+    "protocol": "openid-connect",
+    "attributes": {
+      "include.in.token.scope": "true",
+      "display.on.consent.screen": "false"
+    }
+  }],
   "clients": [
     {
       "clientId": "swagger-ui-client",
@@ -35,7 +43,8 @@
       "serviceAccountsEnabled": true,
       "directAccessGrantsEnabled": false,
       "authorizationServicesEnabled": false,
-      "webOrigins": []
+      "webOrigins": [],
+      "optionalClientScopes": ["events_api_user"]
     }
   ],
   "users": [

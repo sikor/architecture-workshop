@@ -21,7 +21,8 @@
       "directAccessGrantsEnabled": false,
       "serviceAccountsEnabled": false,
       "authorizationServicesEnabled": false,
-      "webOrigins": ["+"]
+      "webOrigins": ["+"],
+      "optionalClientScopes": ["events_api_user"]
     },
     {
       "clientId": "events-api",

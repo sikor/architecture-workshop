@@ -58,9 +58,9 @@ resource "azurerm_key_vault_access_policy" "portal_access" {
   tenant_id    = var.tenant_id
   object_id    = var.portal_access_object_id
 
-  secret_permissions = ["Get", "List", "Set"]
-  key_permissions    = ["Get", "List", "Set"]
-  certificate_permissions = ["Get", "List", "Set"]
+  secret_permissions = ["Get", "List", "Update"]
+  key_permissions    = ["Get", "List", "Update"]
+  certificate_permissions = ["Get", "List", "Update"]
 }
 
 output "key_vault_id" {

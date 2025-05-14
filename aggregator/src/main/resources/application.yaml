@@ -1,6 +1,4 @@
 spring:
-  main:
-    web-application-type: none
   datasource:
     url: jdbc:postgresql://localhost:5432/aggregator
     driver-class-name: org.postgresql.Driver
@@ -10,6 +8,8 @@ spring:
     hibernate:
       ddl-auto: update
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+server:
+  port: 8082
 commands:
   api:
     base-url: http://localhost:8080

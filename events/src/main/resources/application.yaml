@@ -19,7 +19,7 @@ springdoc:
     oauth:
       client-id: swagger-ui-client
       use-pkce-with-authorization-code-grant: true
-events:
+archiwork-commons:
   oauth-flow:
     authorizationUrl: http://localhost:8081/realms/events-realm/protocol/openid-connect/auth
     tokenUrl: http://localhost:8081/realms/events-realm/protocol/openid-connect/token

@@ -33,6 +33,7 @@ services:
     volumes:
       - postgres_data:/bitnami/postgresql
       - ./postgres/init-multiple-dbs.sql:/docker-entrypoint-initdb.d/init-multiple-dbs.sql
+    restart: unless-stopped
 
 volumes:
   postgres_data:

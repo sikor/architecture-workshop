@@ -1,14 +1,24 @@
 {
   "realm": "events-realm",
   "enabled": true,
-  "clientScopes": [{
-    "name": "events_api_user",
-    "protocol": "openid-connect",
-    "attributes": {
-      "include.in.token.scope": "true",
-      "display.on.consent.screen": "false"
+  "clientScopes": [
+    {
+      "name": "events_api_user",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true",
+        "display.on.consent.screen": "false"
+      }
+    },
+    {
+      "name": "aggregator_api_user",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true",
+        "display.on.consent.screen": "false"
+      }
     }
-  }],
+  ],
   "clients": [
     {
       "clientId": "swagger-ui-client",
@@ -21,8 +31,30 @@
       "directAccessGrantsEnabled": false,
       "serviceAccountsEnabled": false,
       "authorizationServicesEnabled": false,
-      "webOrigins": ["+"],
-      "optionalClientScopes": ["events_api_user"]
+      "webOrigins": [
+        "+"
+      ],
+      "optionalClientScopes": [
+        "events_api_user"
+      ]
+    },
+    {
+      "clientId": "swagger-aggregator-client",
+      "publicClient": true,
+      "redirectUris": [
+        "http://localhost:8082/swagger-ui/oauth2-redirect.html"
+      ],
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "authorizationServicesEnabled": false,
+      "webOrigins": [
+        "+"
+      ],
+      "optionalClientScopes": [
+        "aggregator_api_user"
+      ]
     },
     {
       "clientId": "events-api",
@@ -40,12 +72,14 @@
       "secret": "aggregator-secret",
       "publicClient": false,
       "redirectUris": [],
-      "standardFlowEnabled": false,
+      "standardFlowEnabled": true,
       "serviceAccountsEnabled": true,
-      "directAccessGrantsEnabled": false,
-      "authorizationServicesEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "authorizationServicesEnabled": true,
       "webOrigins": [],
-      "optionalClientScopes": ["events_api_user"]
+      "optionalClientScopes": [
+        "events_api_user"
+      ]
     }
   ],
   "users": [

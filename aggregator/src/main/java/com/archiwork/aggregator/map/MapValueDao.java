@@ -41,4 +41,34 @@ public class MapValueDao {
         jdbcTemplate.batchUpdate(sql, batchParams.toArray(new MapSqlParameterSource[0]));
     }
 
+    public List<MapStats> getMapStats(List<String> mapIds) {
+        String baseSql = """
+        SELECT
+            map_id,
+            COUNT(*) AS key_count,
+            MD5(STRING_AGG(map_key || COALESCE(map_value, ''), ',' ORDER BY map_key)) AS checksum
+        FROM map_values
+        """;
+
+        String whereClause = "";
+        MapSqlParameterSource params = new MapSqlParameterSource();
+
+        if (mapIds != null && !mapIds.isEmpty()) {
+            whereClause = "WHERE map_id IN (:mapIds)\n";
+            params.addValue("mapIds", mapIds);
+        }
+
+        String sql = baseSql + whereClause + "GROUP BY map_id";
+
+        return jdbcTemplate.query(sql, params, (rs, rowNum) ->
+                new MapStats(
+                        rs.getString("map_id"),
+                        rs.getLong("key_count"),
+                        rs.getString("checksum")
+                )
+        );
+    }
+
+
+
 }

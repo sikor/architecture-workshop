@@ -1,7 +1,7 @@
-package com.archiwork.events;
+package com.archiwork.commons;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties(prefix = "events.oauth-flow")
+@ConfigurationProperties(prefix = "archiwork-commons.oauth-flow")
 public record OAuthFlowConfig(String authorizationUrl, String tokenUrl, String scope) {
 }

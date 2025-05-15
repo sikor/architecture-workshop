@@ -1,4 +1,4 @@
-package com.archiwork.events;
+package com.archiwork.commons;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -50,7 +50,7 @@ public class SecurityConfig {
                                                 .authorizationCode(new OAuthFlow()
                                                         .authorizationUrl(oAuthFlowConfig.authorizationUrl())
                                                         .tokenUrl(oAuthFlowConfig.tokenUrl())
-                                                        .scopes(new Scopes().addString(oAuthFlowConfig.scope(), "Access Events API"))
+                                                        .scopes(new Scopes().addString(oAuthFlowConfig.scope(), "Access API"))
                                                 )
                                         )
                         )

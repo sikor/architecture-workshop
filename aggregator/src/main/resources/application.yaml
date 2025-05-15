@@ -8,6 +8,22 @@ spring:
     hibernate:
       ddl-auto: update
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8081/realms/events-realm
+          audience: aggregator-client
+springdoc:
+  swagger-ui:
+    oauth:
+      client-id: swagger-aggregator-client
+      use-pkce-with-authorization-code-grant: true
+archiwork-commons:
+  oauth-flow:
+    authorizationUrl: http://localhost:8081/realms/events-realm/protocol/openid-connect/auth
+    tokenUrl: http://localhost:8081/realms/events-realm/protocol/openid-connect/token
+    scope: aggregator_api_user
 server:
   port: 8082
 commands:

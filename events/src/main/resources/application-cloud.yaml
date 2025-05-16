@@ -23,4 +23,4 @@ archiwork-commons:
   oauth-flow:
     authorizationUrl: https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/authorize
     tokenUrl: https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/token
-    scope: ${APP_IDENTIFIER_URI}/access_as_user
+    scope: ${AD_SCOPE}x

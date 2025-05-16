@@ -28,4 +28,8 @@ locals {
   aggregator_app_name       = "${local.short_name}-aggregator"
   aggregator_postgres_db_name  = "${local.short_name}-aggregator-pgdb"
   aggregator_ad_name = "${local.short_name}-aggregator-ad"
+
+  aggreagor_app_service_hostname = "${local.aggregator_app_name}.azurewebsites.net"
+  aggregator_app_redirect_uri         = "https://${local.aggreagor_app_service_hostname}/swagger-ui/oauth2-redirect.html"
+  aggregtor_app_identifier_uri = "api://${local.aggregator_app_name}"
 }

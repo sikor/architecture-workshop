@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: pgadmin
+    password: pgadmin
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8081/realms/events-realm
+springdoc:
+  swagger-ui:
+    oauth:
+      use-pkce-with-authorization-code-grant: true
+archiwork-commons:
+  oauth-flow:
+    authorizationUrl: http://localhost:8081/realms/events-realm/protocol/openid-connect/auth
+    tokenUrl: http://localhost:8081/realms/events-realm/protocol/openid-connect/token

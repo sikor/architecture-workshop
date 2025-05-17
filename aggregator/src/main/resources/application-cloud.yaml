@@ -1,13 +1,6 @@
 spring:
-  datasource:
-    url: jdbc:postgresql://${DATABASE_URL}:5432/${DATABASE_NAME}
-    driver-class-name: org.postgresql.Driver
-    username: ${POSTGRES_USERNAME}
-    password: ${POSTGRES_PASSWORD}
-  jpa:
-    hibernate:
-      ddl-auto: update
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  config:
+    import: "classpath:application-cloud-common.yaml"
 commands:
   api:
     base-url: ${EVENTS_API_BASE_URL}
@@ -15,6 +8,6 @@ commands:
     client-secret: ${AD_CLIENT_SECRET}
     token-uri: https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/token
     scopes:
-      - ${EVENTS_APP_IDENTIFIER_URI}/access_as_user
+      - ${EVENTS_APP_SCOPE}
 polling:
   limit: 1000

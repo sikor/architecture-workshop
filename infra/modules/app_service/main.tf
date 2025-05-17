@@ -39,6 +39,7 @@ locals {
   app_identifier_uri =  "api://${local.app_name}"
   ad_scope = "access"
   ad_identifier_scope = "${local.app_identifier_uri}/${local.ad_scope}"
+  ad_client_credentials_scope = "${local.app_identifier_uri}/.default"
   app_service_hostname = "${local.app_name}.azurewebsites.net"
   swagger_redirect_uri = "https://${local.app_service_hostname}/swagger-ui/oauth2-redirect.html"
 
@@ -188,6 +189,10 @@ output "app_service_hostname" {
 
 output "ad_scope" {
   value = local.ad_identifier_scope
+}
+
+output "ad_client_credentials_scope" {
+  value = local.ad_client_credentials_scope
 }
 
 output "app_name" {

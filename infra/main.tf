@@ -58,7 +58,7 @@ module aggregator_app {
     "DATABASE_NAME" = azurerm_postgresql_flexible_server_database.aggregator_db_instance.name
     "POSTGRES_PASSWORD" = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.pg_password.id})"
     "POSTGRES_USERNAME" = azurerm_postgresql_flexible_server.events_db.administrator_login
-    "EVENTS_APP_SCOPE" = module.events_app.ad_scope
+    "EVENTS_APP_SCOPE" = module.events_app.ad_client_credentials_scope
     "EVENTS_API_BASE_URL" = module.events_app.app_service_hostname
   }
 

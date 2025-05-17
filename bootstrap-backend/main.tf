@@ -16,13 +16,8 @@ variable "prefix" {
   default     = "archiwork"
 }
 
-resource "random_id" "sa_suffix" {
-  byte_length = 4
-}
-
 locals {
   storage_account_name = lower(substr("${var.prefix}0backendsa", 0, 24))
-  # ${random_id.sa_suffix.hex} must be ≤ 24 chars, no dashes
 }
 
 

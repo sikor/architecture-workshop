@@ -50,7 +50,8 @@ resource "azurerm_key_vault_access_policy" "admin_access" {
     "Get",
     "List",
     "Set",
-    "Delete"
+    "Delete",
+    "Purge"
   ]
 }
 

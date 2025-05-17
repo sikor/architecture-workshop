@@ -189,3 +189,7 @@ output "app_service_hostname" {
 output "ad_scope" {
   value = local.ad_identifier_scope
 }
+
+output "app_name" {
+  value = azurerm_linux_web_app.app.name
+}

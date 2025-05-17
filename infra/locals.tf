@@ -12,24 +12,11 @@ locals {
   # Suffixes for different resource types - project scope
   kv_name        = "${local.short_name}-kv-${random_id.kv_suffix.hex}"
   rg_name        = "${local.short_name}-rg"
-  tf_state_key = "${local.short_name}.tfstate"
 
   # events service scope
-  events_app_name       = "${local.short_name}-events-wa"
   events_postgres_server_name  = "${local.short_name}-events-pgs"
   events_postgres_db_name  = "${local.short_name}-events-pgdb"
-  events_ad_name = "${local.short_name}-events-ad"
-
-  events_app_service_hostname = "${local.events_app_name}.azurewebsites.net"
-  events_app_redirect_uri         = "https://${local.events_app_service_hostname}/swagger-ui/oauth2-redirect.html"
-  events_app_identifier_uri = "api://${local.events_app_name}"
 
   # aggregator service
-  aggregator_app_name       = "${local.short_name}-aggregator"
   aggregator_postgres_db_name  = "${local.short_name}-aggregator-pgdb"
-  aggregator_ad_name = "${local.short_name}-aggregator-ad"
-
-  aggreagor_app_service_hostname = "${local.aggregator_app_name}.azurewebsites.net"
-  aggregator_app_redirect_uri         = "https://${local.aggreagor_app_service_hostname}/swagger-ui/oauth2-redirect.html"
-  aggregtor_app_identifier_uri = "api://${local.aggregator_app_name}"
 }

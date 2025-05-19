@@ -1,4 +1,5 @@
 rootProject.name = "architecture-workshops"
 include("events")
 include("aggregator")
-include("commons") // 👈 add this line
+include("commons")
+include("e2e")

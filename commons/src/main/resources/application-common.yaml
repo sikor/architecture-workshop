@@ -1,8 +1,9 @@
 spring:
   datasource:
+    url: jdbc:postgresql://${DATABASE_URL}:5432/${DATABASE_NAME}
     driver-class-name: org.postgresql.Driver
-    username: pgadmin
-    password: pgadmin
+    username: ${POSTGRES_USERNAME}
+    password: ${POSTGRES_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: update
@@ -11,12 +12,17 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:8081/realms/events-realm
+          issuer-uri: ${JWT_ISSUER_URI} # https://login.microsoftonline.com/${TENANT_ID}/v2.0
+          audience: ${JWT_AUDIENCE} # AD_CLIENT_ID
+server:
+  port: ${SERVER_PORT}
 springdoc:
   swagger-ui:
     oauth:
+      client-id: ${SWAGGER_AD_CLIENT_ID}
       use-pkce-with-authorization-code-grant: true
 archiwork-commons:
   oauth-flow:
-    authorizationUrl: http://localhost:8081/realms/events-realm/protocol/openid-connect/auth
-    tokenUrl: http://localhost:8081/realms/events-realm/protocol/openid-connect/token
+    authorizationUrl: ${AUTHORIZATION_URL} # https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/authorize
+    tokenUrl: ${TOKEN_URL} # https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/token
+    scope: ${AD_SCOPE}

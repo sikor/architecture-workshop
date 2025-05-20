@@ -44,12 +44,13 @@ locals {
   swagger_redirect_uri = "https://${local.app_service_hostname}/swagger-ui/oauth2-redirect.html"
 
   default_app_settings = {
-    "SPRING_PROFILES_ACTIVE" = "cloud"
     "SWAGGER_AD_CLIENT_ID" = azuread_application.swagger_ui_client.client_id
-    "TENANT_ID" = var.tenant_id
+    "AUTHORIZATION_URL"="https://login.microsoftonline.com/${var.tenant_id}/oauth2/v2.0/authorize"
+    "TOKEN_URL"="https://login.microsoftonline.com/${var.tenant_id}/oauth2/v2.0/token"
     "AD_CLIENT_ID" = azuread_application.app_ad.client_id
     "AD_CLIENT_SECRET" = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.app_ad_client_secret.id})"
     "AD_SCOPE" = local.ad_identifier_scope
+    "SERVER_PORT"="8080"
   }
 
   merged_app_settings = merge(local.default_app_settings, var.app_settings)

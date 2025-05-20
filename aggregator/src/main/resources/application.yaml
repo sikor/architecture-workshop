@@ -1,29 +1,13 @@
 spring:
   config:
     import: "classpath:application-common.yaml"
-  datasource:
-    url: jdbc:postgresql://localhost:5432/aggregator
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          audience: aggregator-client
-springdoc:
-  swagger-ui:
-    oauth:
-      client-id: swagger-aggregator-client
-archiwork-commons:
-  oauth-flow:
-    scope: aggregator_api_user
-server:
-  port: 8082
 commands:
   api:
-    base-url: http://localhost:8080
-    client-id: aggregator-client
-    client-secret: aggregator-secret
-    token-uri: http://localhost:8081/realms/events-realm/protocol/openid-connect/token
+    base-url: ${EVENTS_API_BASE_URL}
+    client-id: ${AD_CLIENT_ID}
+    client-secret: ${AD_CLIENT_SECRET}
+    token-uri:  ${TOKEN_URL} # https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/token
     scopes:
-      - events_api_user
+      - ${EVENTS_APP_SCOPE}
 polling:
   limit: 1000

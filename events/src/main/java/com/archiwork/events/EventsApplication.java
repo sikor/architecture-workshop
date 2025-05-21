@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 
 
@@ -19,6 +20,11 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 public class EventsApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(EventsApplication.class, args);
+        createApplication().run(args);
+    }
+
+    public static SpringApplicationBuilder createApplication() {
+        return new SpringApplicationBuilder(EventsApplication.class)
+                .properties("spring.config.name=application-events");
     }
 }

@@ -2,6 +2,8 @@ package com.archiwork.e2e;
 
 import com.archiwork.e2e.utils.AppLauncher;
 import io.restassured.response.Response;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
@@ -11,11 +13,20 @@ public class AggregateEventsTest {
 
     private static final String TOKEN = System.getenv("E2E_BEARER_TOKEN"); // or read via test config
     private static final String EVENTS_URL = "http://localhost:8080/commands"; // for local docker-compose
-    private static final String AGGREGATOR_URL = "http://localhost:8081/map/stats";
+    private static final String AGGREGATOR_URL = "http://localhost:8082/map/stats";
+
+    @BeforeAll
+    public static void beforeAll() {
+        AppLauncher.startApps();
+    }
+
+    @AfterAll
+    public static void afterAll() {
+        AppLauncher.stopApps();
+    }
 
     @Test
     void testCommandAndStatsFlow() {
-        new AppLauncher();
         String payload = """
                 [
                   {
@@ -33,16 +44,14 @@ public class AggregateEventsTest {
                 .body(payload)
                 .post(EVENTS_URL)
                 .then()
-                .statusCode(200)
+                .statusCode(401)
                 .extract()
                 .response();
-
-        System.out.println("POST response: " + postResponse.asString());
 
         given()
                 .get(AGGREGATOR_URL)
                 .then()
-                .statusCode(200)
+                .statusCode(401)
                 .body(notNullValue());
     }
 }

@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
@@ -19,6 +20,11 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class AggregatorApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(AggregatorApplication.class, args);
+        createApplication().run(args);
+    }
+
+    public static SpringApplicationBuilder createApplication() {
+        return new SpringApplicationBuilder(AggregatorApplication.class)
+                .properties("spring.config.name=application-aggregator");
     }
 }

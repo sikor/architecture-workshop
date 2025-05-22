@@ -90,13 +90,13 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ steps.tf_outputs.outputs.events_app_name }}
-          package: "events/build/libs/*.jar"
+          package: "events/build/libs/*boot.jar"
 
       - name: Deploy Aggregator to Azure App Service
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ steps.tf_outputs.outputs.aggregator_app_name }}
-          package: "aggregator/build/libs/*.jar"
+          package: "aggregator/build/libs/*boot.jar"
 
       - name: Check App Health
         run: | 

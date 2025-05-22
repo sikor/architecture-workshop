@@ -70,11 +70,21 @@ jobs:
           java-version: '21'
           distribution: temurin
 
+      - name: Check Docker Compose version
+        run: docker compose version
+
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
+      - name: Start Docker Compose for E2E dependencies
+        run: docker compose -f local-env/docker-compose.yml up --detach --wait --wait-timeout 60m
+
       - name: Build with Gradle
         run: ./gradlew build
+
+      - name: Tear down services
+        if: always()  # Ensure this runs even if previous steps fail
+        run:  docker compose -f local-env/docker-compose.yml down
 
       - name: Deploy Events to Azure App Service
         uses: azure/webapps-deploy@v3

@@ -22,6 +22,11 @@ services:
     volumes:
       - ./keycloak/realm-events.json:/opt/bitnami/keycloak/data/import/realm-events.json
     restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/realms/master" ]
+      interval: 4s
+      timeout: 2s
+      retries: 10
 
   postgresql:
     image: bitnami/postgresql:17
@@ -34,6 +39,11 @@ services:
       - postgres_data:/bitnami/postgresql
       - ./postgres/init-multiple-dbs.sql:/docker-entrypoint-initdb.d/init-multiple-dbs.sql
     restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "pgadmin" ]
+      interval: 2s
+      timeout: 2s
+      retries: 10
 
 volumes:
   postgres_data:

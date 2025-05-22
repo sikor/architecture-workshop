@@ -44,6 +44,8 @@ locals {
   swagger_redirect_uri = "https://${local.app_service_hostname}/swagger-ui/oauth2-redirect.html"
 
   default_app_settings = {
+    "JWT_ISSUER_URI"="https://login.microsoftonline.com/${var.tenant_id}/v2.0"
+    "JWT_AUDIENCE"=azuread_application.app_ad.client_id
     "SWAGGER_AD_CLIENT_ID" = azuread_application.swagger_ui_client.client_id
     "AUTHORIZATION_URL"="https://login.microsoftonline.com/${var.tenant_id}/oauth2/v2.0/authorize"
     "TOKEN_URL"="https://login.microsoftonline.com/${var.tenant_id}/oauth2/v2.0/token"

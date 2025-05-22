@@ -123,6 +123,18 @@ resource "azuread_application" "app_ad" {
       value                      = local.ad_scope
     }
   }
+
+  /**
+
+  required_resource_access {
+    resource_app_id = azuread_application.events_app_ad.client_id
+
+    resource_access {
+      id   = random_uuid.access_as_user_scope_id.result
+      type = "Scope"
+    }
+  }
+   */
 }
 
 resource "azuread_service_principal" "app_sp" {

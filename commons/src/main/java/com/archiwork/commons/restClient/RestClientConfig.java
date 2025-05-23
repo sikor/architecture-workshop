@@ -1,4 +1,4 @@
-package com.archiwork.aggregator.client;
+package com.archiwork.commons.restClient;
 
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -10,9 +10,6 @@ import org.springframework.security.oauth2.client.registration.InMemoryClientReg
 import org.springframework.security.oauth2.client.web.client.OAuth2ClientHttpRequestInterceptor;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.web.client.RestClient;
-import org.springframework.beans.factory.annotation.Value;
-
-import java.util.List;
 
 @Configuration
 @EnableConfigurationProperties(ApiProperties.class)
@@ -27,7 +24,7 @@ public class RestClientConfig {
                 .clientId(props.clientId())
                 .clientSecret(props.clientSecret())
                 .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
-                .scope(props.scopes())
+                .scope(props.requireEventsApi().scopes())
                 .build();
 
         return new InMemoryClientRegistrationRepository(registration);
@@ -54,13 +51,13 @@ public class RestClientConfig {
     }
 
     @Bean
-    public RestClient commandsRestClient(@Value("${commands.api.base-url}") String baseUrl,
+    public RestClient commandsRestClient(ApiProperties props,
                                          OAuth2AuthorizedClientManager authorizedClientManager) {
         OAuth2ClientHttpRequestInterceptor interceptor =
                 new OAuth2ClientHttpRequestInterceptor(authorizedClientManager);
         interceptor.setClientRegistrationIdResolver(request -> "events");
         return RestClient.builder()
-                .baseUrl(baseUrl)
+                .baseUrl(props.requireEventsApi().baseUrl())
                 .requestInterceptor(interceptor)
                 .build();
     }

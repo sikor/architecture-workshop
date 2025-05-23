@@ -15,8 +15,8 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
                 description = "Commands Queue API"
         )
 )
-@ConfigurationPropertiesScan(basePackages = {"com.archiwork.events", "com.archiwork.commons"})
-@SpringBootApplication(scanBasePackages = {"com.archiwork.events", "com.archiwork.commons"})
+@ConfigurationPropertiesScan(basePackages = {"com.archiwork.events", "com.archiwork.commons.serverSecurity"})
+@SpringBootApplication(scanBasePackages = {"com.archiwork.events", "com.archiwork.commons.serverSecurity"})
 public class EventsApplication {
 
     public static void main(String[] args) {

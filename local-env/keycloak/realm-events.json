@@ -80,6 +80,21 @@
       "optionalClientScopes": [
         "events_api_user"
       ]
+    },
+    {
+      "clientId": "e2e-client",
+      "secret": "e2e-secret",
+      "publicClient": false,
+      "redirectUris": [],
+      "standardFlowEnabled": true,
+      "serviceAccountsEnabled": true,
+      "directAccessGrantsEnabled": true,
+      "authorizationServicesEnabled": true,
+      "webOrigins": [],
+      "optionalClientScopes": [
+        "events_api_user",
+        "aggregator_api_user"
+      ]
     }
   ],
   "users": [

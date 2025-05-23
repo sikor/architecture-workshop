@@ -1,4 +1,4 @@
-package com.archiwork.commons;
+package com.archiwork.commons.serverSecurity;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

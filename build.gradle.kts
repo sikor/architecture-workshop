@@ -18,14 +18,21 @@ fun loadEnvFile(file: File): Map<String, String> {
 }
 
 subprojects {
+    val envFileName = "${project.name}-local.env"
+
+    tasks.withType<Test>().configureEach {
+        val envFile = project.file("src/test/resources/$envFileName")
+        if (envFile.exists()) {
+            environment(loadEnvFile(envFile))
+            logger.info("Env file found for '${project.name}' at: $envFile")
+        }
+    }
+
     tasks.withType<JavaExec>().configureEach {
-        val envFileName = "${project.name}-local.env"
         val envFile = project.file("src/main/resources/$envFileName")
         if (envFile.exists()) {
             environment(loadEnvFile(envFile))
-        } else {
-            logger.warn("⚠️ No local env file found for '${project.name}' at: $envFile")
+            logger.info("Env file found for '${project.name}' at: $envFile")
         }
     }
 }
-

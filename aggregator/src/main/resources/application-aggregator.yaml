@@ -1,13 +1,14 @@
 spring:
   config:
     import: "classpath:application-common.yaml"
-commands:
-  api:
-    base-url: ${EVENTS_API_BASE_URL}
+archiwork-commons:
+  api-access:
     client-id: ${AD_CLIENT_ID}
     client-secret: ${AD_CLIENT_SECRET}
     token-uri:  ${TOKEN_URL} # https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/token
-    scopes:
-      - ${EVENTS_APP_SCOPE}
+    events:
+      base-url: ${EVENTS_API_BASE_URL}
+      scopes:
+        - ${EVENTS_APP_SCOPE}
 polling:
   limit: 1000

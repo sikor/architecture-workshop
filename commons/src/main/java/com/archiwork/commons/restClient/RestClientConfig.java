@@ -67,7 +67,7 @@ public class RestClientConfig {
     }
 
     @Bean
-    @ConditionalOnProperty(name = "archiwork-commons.api-access." + EVENTS + ".baseUrl")
+    @ConditionalOnProperty(name = "archiwork-commons.api-access." + EVENTS + ".base-url")
     public EventsRestClient eventsRestClient(ApiProperties props,
                                              OAuth2AuthorizedClientManager authorizedClientManager) {
         String baseUrl = props.requireEventsApi().baseUrl();
@@ -76,7 +76,7 @@ public class RestClientConfig {
     }
 
     @Bean
-    @ConditionalOnProperty(name = "archiwork-commons.api-access." + AGGREGATOR + ".baseUrl")
+    @ConditionalOnProperty(name = "archiwork-commons.api-access." + AGGREGATOR + ".base-url")
     public AggregatorRestClient aggregatorRestClient(ApiProperties props,
                                              OAuth2AuthorizedClientManager authorizedClientManager) {
         String baseUrl = props.requireAggregatorApi().baseUrl();

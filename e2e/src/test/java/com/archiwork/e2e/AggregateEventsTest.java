@@ -24,11 +24,8 @@ import static org.hamcrest.Matchers.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class AggregateEventsTest {
 
-    private static final String EVENTS_URL = "http://localhost:8080/commands"; // for local docker-compose
-    private static final String AGGREGATOR_URL = "http://localhost:8082/map/stats";
     private static final Authentication ANONYMOUS_AUTHENTICATION = new AnonymousAuthenticationToken("anonymous",
             "anonymousUser", AuthorityUtils.createAuthorityList("ROLE_ANONYMOUS"));
-
 
     @Autowired
     private OAuth2AuthorizedClientManager oAuth2AuthorizedClientManager;

@@ -213,3 +213,11 @@ output "ad_client_credentials_scope" {
 output "app_name" {
   value = azurerm_linux_web_app.app.name
 }
+
+output "app_client_id" {
+  value = azuread_application.app_ad.client_id
+}
+
+output "app_scope_id" {
+  value = random_uuid.access_scope_id.result
+}

@@ -18,7 +18,28 @@ output "aggregator_app_url" {
   value       = module.aggregator_app.app_service_hostname
 }
 
-
 output "current_terraform_oid" {
   value = data.azurerm_client_config.current.object_id
+}
+
+output "e2e_client_id" {
+  value     = azuread_application.e2e_client.client_id
+}
+
+output "e2e_client_secret" {
+  value     = azuread_application_password.e2e_ad_secret.value
+  sensitive = true
+}
+
+output "token_uri" {
+  value = "https://login.microsoftonline.com/${data.azurerm_client_config.current.tenant_id}/oauth2/v2.0/token"
+}
+
+output "events_app_client_credentials_scope" {
+  value = module.events_app.ad_client_credentials_scope
+}
+
+
+output "aggregator_app_client_credentials_scope" {
+  value = module.aggregator_app.ad_client_credentials_scope
 }

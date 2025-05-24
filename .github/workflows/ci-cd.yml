@@ -62,6 +62,12 @@ jobs:
           echo "events_app_name=$(terraform output -raw events_app_name)" >> "$GITHUB_OUTPUT"
           echo "aggregator_app_name=$(terraform output -raw aggregator_app_name)" >> "$GITHUB_OUTPUT"
           echo "events_app_url=$(terraform output -raw events_app_url)" >> "$GITHUB_OUTPUT"
+          echo "events_app_client_credentials_scope=$(terraform output -raw events_app_client_credentials_scope)" >> "$GITHUB_OUTPUT"
+          echo "aggregator_app_url=$(terraform output -raw aggregator_app_url)" >> "$GITHUB_OUTPUT"
+          echo "aggregator_app_client_credentials_scope=$(terraform output -raw aggregator_app_client_credentials_scope)" >> "$GITHUB_OUTPUT"
+          echo "token_uri=$(terraform output -raw token_uri)" >> "$GITHUB_OUTPUT"
+          echo "e2e_client_id=$(terraform output -raw e2e_client_id)" >> "$GITHUB_OUTPUT"
+          echo "e2e_client_secret=$(terraform output -raw e2e_client_secret)" >> "$GITHUB_OUTPUT"
         working-directory: infra
 
       - name: Set up Java 21

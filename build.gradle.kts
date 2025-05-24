@@ -9,12 +9,19 @@ allprojects {
     }
 }
 
-fun loadEnvFile(file: File): Map<String, String> {
+fun loadEnvFileWithDefaults(file: File): Map<String, String> {
     return file.readLines()
-        .filter { it.isNotBlank() && !it.trim().startsWith("#") }.associate {
+        .filter { it.isNotBlank() && !it.trim().startsWith("#") }
+        .mapNotNull {
             val (key, value) = it.split("=", limit = 2)
-            key.trim() to value.trim()
-        }
+            val trimmedKey = key.trim()
+            val trimmedValue = value.trim()
+            if (System.getenv(trimmedKey) == null) {
+                trimmedKey to trimmedValue
+            } else {
+                null // skip, because it's already set in the environment
+            }
+        }.toMap()
 }
 
 subprojects {
@@ -23,7 +30,7 @@ subprojects {
     tasks.withType<Test>().configureEach {
         val envFile = project.file("src/test/resources/$envFileName")
         if (envFile.exists()) {
-            environment(loadEnvFile(envFile))
+            environment(loadEnvFileWithDefaults(envFile))
             logger.info("Env file found for '${project.name}' at: $envFile")
         }
     }
@@ -31,7 +38,7 @@ subprojects {
     tasks.withType<JavaExec>().configureEach {
         val envFile = project.file("src/main/resources/$envFileName")
         if (envFile.exists()) {
-            environment(loadEnvFile(envFile))
+            environment(loadEnvFileWithDefaults(envFile))
             logger.info("Env file found for '${project.name}' at: $envFile")
         }
     }

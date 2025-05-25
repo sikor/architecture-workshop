@@ -28,7 +28,7 @@ public class RestClientConfig {
     private static ClientRegistration buildRegistration(ApiProperties props, ApiBaseUrl url, String id) {
         return ClientRegistration
                 .withRegistrationId(id)
-                .tokenUri(props.tokenUri())
+                .tokenUri(props.tokenUri().toString())
                 .clientId(props.clientId())
                 .clientSecret(props.clientSecret())
                 .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)

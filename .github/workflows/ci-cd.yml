@@ -30,14 +30,6 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Print identity info
-        run: |
-          echo "== AZ ACCOUNT =="
-          az account show
-          echo "== SP OBJECT ID =="
-          appId=$(az account show --query user.name -o tsv)
-          az ad sp show --id $appId --query "{objectId:objectId, displayName:displayName}"
-
       - name: Terraform Init
         run: terraform init -backend-config=${{ vars.TF_BACKEND_CONFIG }}
         working-directory: infra
@@ -82,15 +74,8 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Start Docker Compose for E2E dependencies
-        run: docker compose -f local-env/docker-compose.yml up --detach --wait --wait-timeout 60
-
       - name: Build with Gradle
         run: ./gradlew build
-
-      - name: Tear down services
-        if: always()  # Ensure this runs even if previous steps fail
-        run:  docker compose -f local-env/docker-compose.yml down
 
       - name: Deploy Events to Azure App Service
         uses: azure/webapps-deploy@v3

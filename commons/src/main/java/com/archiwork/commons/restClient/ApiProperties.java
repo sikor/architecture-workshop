@@ -2,12 +2,12 @@ package com.archiwork.commons.restClient;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import javax.swing.text.html.Option;
+import java.net.URL;
 import java.util.Optional;
 
 @ConfigurationProperties(prefix = "archiwork-commons.api-access")
 public record ApiProperties(
-        String tokenUri,
+        URL tokenUri,
         String clientId,
         String clientSecret,
         ApiBaseUrl events,

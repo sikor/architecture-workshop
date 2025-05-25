@@ -3,6 +3,7 @@ package com.archiwork.e2e;
 import com.archiwork.commons.restClient.ApiProperties;
 import com.archiwork.commons.restClient.RestClientConfig;
 import com.archiwork.e2e.utils.AppLauncher;
+import com.archiwork.e2e.utils.DockerComposeLauncher;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
@@ -10,6 +11,8 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -28,6 +31,8 @@ import static org.hamcrest.Matchers.*;
 @SpringBootTest(properties = "spring.profiles.active=e2e", classes = RestClientConfig.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class AggregateEventsTest {
+
+    private static final Logger logger = LoggerFactory.getLogger(AggregateEventsTest.class);
 
     private static final Authentication ANONYMOUS_AUTHENTICATION = new AnonymousAuthenticationToken("anonymous",
             "anonymousUser", AuthorityUtils.createAuthorityList("ROLE_ANONYMOUS"));
@@ -50,7 +55,7 @@ public class AggregateEventsTest {
         return apiProperties.requireEventsApi().baseUrl();
     }
 
-    private URL getAggregatorUrl(){
+    private URL getAggregatorUrl() {
         return apiProperties.requireAggregatorApi().baseUrl();
     }
 
@@ -67,18 +72,29 @@ public class AggregateEventsTest {
 
     @BeforeAll
     void beforeAll() {
+        URL tokenUrl = apiProperties.tokenUri();
         URL eventsUrl = getEventsUrl();
         URL aggregatorUrl = getAggregatorUrl();
 
+        boolean tokenIsLocalhost = isLocalhost(tokenUrl);
         boolean eventsIsLocalhost = isLocalhost(eventsUrl);
         boolean aggregatorIsLocalhost = isLocalhost(aggregatorUrl);
 
+        boolean tokensReachable = isTcpReachable(tokenUrl);
         boolean eventsReachable = isTcpReachable(eventsUrl);
         boolean aggregatorReachable = isTcpReachable(aggregatorUrl);
 
-        if (eventsIsLocalhost && aggregatorIsLocalhost && !eventsReachable && !aggregatorReachable) {
+        if (tokenIsLocalhost && !tokensReachable) {
+            DockerComposeLauncher.start();
+        }
+
+        if (eventsIsLocalhost &&
+                aggregatorIsLocalhost &&
+                !eventsReachable &&
+                !aggregatorReachable) {
             AppLauncher.startApps();
         }
+
     }
 
     private boolean isTcpReachable(URL url) {
@@ -100,7 +116,12 @@ public class AggregateEventsTest {
 
     @AfterAll
     public void afterAll() {
-        AppLauncher.stopApps();
+        try {
+            AppLauncher.stopApps();
+        } catch (Exception e) {
+            logger.error("Failed to stop apps", e);
+        }
+        DockerComposeLauncher.stop();
     }
 
     @Test

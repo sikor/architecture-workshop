@@ -12,6 +12,8 @@ import org.springframework.security.oauth2.client.web.client.OAuth2ClientHttpReq
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.web.client.RestClient;
 
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -69,8 +71,8 @@ public class RestClientConfig {
     @Bean
     @ConditionalOnProperty(name = "archiwork-commons.api-access." + EVENTS + ".base-url")
     public EventsRestClient eventsRestClient(ApiProperties props,
-                                             OAuth2AuthorizedClientManager authorizedClientManager) {
-        String baseUrl = props.requireEventsApi().baseUrl();
+                                             OAuth2AuthorizedClientManager authorizedClientManager) throws URISyntaxException {
+        URL baseUrl = props.requireEventsApi().baseUrl();
         RestClient restClient = createRestClient(authorizedClientManager, EVENTS, baseUrl);
         return new EventsRestClient(restClient);
     }
@@ -78,8 +80,8 @@ public class RestClientConfig {
     @Bean
     @ConditionalOnProperty(name = "archiwork-commons.api-access." + AGGREGATOR + ".base-url")
     public AggregatorRestClient aggregatorRestClient(ApiProperties props,
-                                             OAuth2AuthorizedClientManager authorizedClientManager) {
-        String baseUrl = props.requireAggregatorApi().baseUrl();
+                                             OAuth2AuthorizedClientManager authorizedClientManager) throws URISyntaxException {
+        URL baseUrl = props.requireAggregatorApi().baseUrl();
         RestClient restClient = createRestClient(authorizedClientManager, AGGREGATOR, baseUrl);
         return new AggregatorRestClient(restClient);
     }
@@ -87,12 +89,12 @@ public class RestClientConfig {
     private static RestClient createRestClient(
             OAuth2AuthorizedClientManager authorizedClientManager,
             String name,
-            String baseUrl) {
+            URL baseUrl) throws URISyntaxException {
         OAuth2ClientHttpRequestInterceptor interceptor =
                 new OAuth2ClientHttpRequestInterceptor(authorizedClientManager);
         interceptor.setClientRegistrationIdResolver(request -> name);
         return RestClient.builder()
-                .baseUrl(baseUrl)
+                .baseUrl(baseUrl.toURI())
                 .requestInterceptor(interceptor)
                 .build();
     }

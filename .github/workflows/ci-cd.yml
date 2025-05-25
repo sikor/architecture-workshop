@@ -68,6 +68,9 @@ jobs:
           echo "token_uri=$(terraform output -raw token_uri)" >> "$GITHUB_OUTPUT"
           echo "e2e_client_id=$(terraform output -raw e2e_client_id)" >> "$GITHUB_OUTPUT"
           echo "e2e_client_secret=$(terraform output -raw e2e_client_secret)" >> "$GITHUB_OUTPUT"
+          
+          # Mask the secret so it never appears in logs
+          echo "::add-mask::$(terraform output -raw e2e_client_secret)"
         working-directory: infra
 
       - name: Set up Java 21
@@ -75,9 +78,6 @@ jobs:
         with:
           java-version: '21'
           distribution: temurin
-
-      - name: Check Docker Compose version
-        run: docker compose version
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
@@ -107,7 +107,7 @@ jobs:
       - name: Check App Health
         run: | 
           for i in {1..10}; do
-            STATUS=$(curl -s -o /dev/null -w "%{http_code}" ${{ steps.tf_outputs.outputs.events_app_url }}/actuator/health) 
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" ${{ steps.tf_outputs.outputs.aggregator_app_url }}/actuator/health) 
             echo "Health check HTTP status: $STATUS"
             if [ "$STATUS" -eq 200 ]; then
               echo "✅ App is healthy!"
@@ -118,3 +118,15 @@ jobs:
           done
           echo "❌ App failed to become healthy in time"
           exit 1
+
+      - name: Run E2E Tests
+        working-directory: e2e
+        run: ./gradlew test
+        env:
+          TOKEN_URI: ${{ steps.tf_outputs.outputs.token_uri }}
+          CLIENT_ID: ${{ steps.tf_outputs.outputs.e2e_client_id }}
+          CLIENT_SECRET: ${{ steps.tf_outputs.outputs.e2e_client_secret }}
+          EVENTS_API_BASE_URL: ${{ steps.tf_outputs.outputs.events_app_url }}
+          AGGREGATOR_API_BASE_URL: ${{ steps.tf_outputs.outputs.aggregator_app_url }}
+          EVENTS_APP_SCOPE: ${{ steps.tf_outputs.outputs.events_app_client_credentials_scope }}
+          AGGREGATOR_APP_SCOPE: ${{ steps.tf_outputs.outputs.aggregator_app_client_credentials_scope }}

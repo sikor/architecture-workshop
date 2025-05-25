@@ -18,6 +18,11 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
 
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.URL;
+
 import static org.hamcrest.Matchers.*;
 
 @SpringBootTest(properties = "spring.profiles.active=e2e", classes = RestClientConfig.class)
@@ -41,11 +46,11 @@ public class AggregateEventsTest {
         return givenToken(RestClientConfig.AGGREGATOR);
     }
 
-    private String getEventsUrl() {
+    private URL getEventsUrl() {
         return apiProperties.requireEventsApi().baseUrl();
     }
 
-    private String getAggregatorUrl(){
+    private URL getAggregatorUrl(){
         return apiProperties.requireAggregatorApi().baseUrl();
     }
 
@@ -61,12 +66,40 @@ public class AggregateEventsTest {
     }
 
     @BeforeAll
-    public static void beforeAll() {
-        AppLauncher.startApps();
+    void beforeAll() {
+        URL eventsUrl = getEventsUrl();
+        URL aggregatorUrl = getAggregatorUrl();
+
+        boolean eventsIsLocalhost = isLocalhost(eventsUrl);
+        boolean aggregatorIsLocalhost = isLocalhost(aggregatorUrl);
+
+        boolean eventsReachable = isTcpReachable(eventsUrl);
+        boolean aggregatorReachable = isTcpReachable(aggregatorUrl);
+
+        if (eventsIsLocalhost && aggregatorIsLocalhost && !eventsReachable && !aggregatorReachable) {
+            AppLauncher.startApps();
+        }
+    }
+
+    private boolean isTcpReachable(URL url) {
+        String host = url.getHost();
+        int port = url.getPort() != -1 ? url.getPort() : url.getDefaultPort();
+
+        try (Socket socket = new Socket()) {
+            socket.connect(new InetSocketAddress(host, port), 2000);
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    private boolean isLocalhost(URL url) {
+        String host = url.getHost();
+        return "localhost".equalsIgnoreCase(host) || "127.0.0.1".equals(host);
     }
 
     @AfterAll
-    public static void afterAll() {
+    public void afterAll() {
         AppLauncher.stopApps();
     }
 

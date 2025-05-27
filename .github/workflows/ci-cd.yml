@@ -105,8 +105,7 @@ jobs:
           exit 1
 
       - name: Run E2E Tests
-        working-directory: e2e
-        run: ./gradlew test
+        run: ./gradlew e2e:test
         env:
           TOKEN_URI: ${{ steps.tf_outputs.outputs.token_uri }}
           CLIENT_ID: ${{ steps.tf_outputs.outputs.e2e_client_id }}

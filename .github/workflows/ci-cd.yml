@@ -91,7 +91,7 @@ jobs:
 
       - name: Check App Health
         run: | 
-          for i in {1..10}; do
+          for i in {1..20}; do
             STATUS=$(curl -s -o /dev/null -w "%{http_code}" ${{ steps.tf_outputs.outputs.aggregator_app_url }}/actuator/health) 
             echo "Health check HTTP status: $STATUS"
             if [ "$STATUS" -eq 200 ]; then

@@ -16,6 +16,7 @@ dependencyManagement {
 }
 
 dependencies {
+    implementation(enforcedPlatform("org.springframework.boot:spring-boot-dependencies:3.4.5"))
     api("org.springframework.boot:spring-boot-starter-web")
     api("org.springframework.boot:spring-boot-starter-oauth2-client")
     api("org.springframework.boot:spring-boot-starter-data-jpa")

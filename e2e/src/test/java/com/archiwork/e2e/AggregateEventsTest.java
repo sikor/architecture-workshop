@@ -1,5 +1,6 @@
 package com.archiwork.e2e;
 
+import com.archiwork.commons.restClient.AccessTokenProvider;
 import com.archiwork.commons.restClient.ApiProperties;
 import com.archiwork.commons.restClient.RestClientConfig;
 import com.archiwork.e2e.utils.AppLauncher;
@@ -15,11 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -34,11 +30,8 @@ public class AggregateEventsTest {
 
     private static final Logger logger = LoggerFactory.getLogger(AggregateEventsTest.class);
 
-    private static final Authentication ANONYMOUS_AUTHENTICATION = new AnonymousAuthenticationToken("anonymous",
-            "anonymousUser", AuthorityUtils.createAuthorityList("ROLE_ANONYMOUS"));
-
     @Autowired
-    private OAuth2AuthorizedClientManager oAuth2AuthorizedClientManager;
+    private AccessTokenProvider accessTokenProvider;
 
     @Autowired
     private ApiProperties apiProperties;
@@ -60,12 +53,7 @@ public class AggregateEventsTest {
     }
 
     private RequestSpecification givenToken(String registrationId) {
-        OAuth2AuthorizeRequest authorizeRequest = OAuth2AuthorizeRequest
-                .withClientRegistrationId(registrationId)
-                .principal(ANONYMOUS_AUTHENTICATION)
-                .build();
-        String token = oAuth2AuthorizedClientManager.authorize(authorizeRequest)
-                .getAccessToken().getTokenValue();
+        String token = accessTokenProvider.getToken(registrationId);
         return RestAssured.given()
                 .auth().oauth2(token);
     }

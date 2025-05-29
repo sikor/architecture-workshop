@@ -1,0 +1,13 @@
+archiwork-commons:
+  api-access:
+    token-uri: ${TOKEN_URI}
+    client-id: ${CLIENT_ID}
+    client-secret: ${CLIENT_SECRET}
+    events:
+      base-url: ${EVENTS_API_BASE_URL}
+      scopes:
+        - ${EVENTS_APP_SCOPE}
+    aggregator:
+      base-url: ${AGGREGATOR_API_BASE_URL}
+      scopes:
+        - ${AGGREGATOR_APP_SCOPE}

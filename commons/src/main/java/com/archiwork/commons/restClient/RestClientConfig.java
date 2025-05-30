@@ -3,6 +3,7 @@ package com.archiwork.commons.restClient;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.oauth2.client.*;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
@@ -20,6 +21,7 @@ import java.util.stream.Stream;
 
 @Configuration
 @EnableConfigurationProperties(ApiProperties.class)
+@ComponentScan(basePackages = {"com.archiwork.commons.restClient"})
 public class RestClientConfig {
 
     public static final String EVENTS = "events";

@@ -95,6 +95,21 @@
         "events_api_user",
         "aggregator_api_user"
       ]
+    },
+    {
+      "clientId": "perf-client",
+      "secret": "perf-secret",
+      "publicClient": false,
+      "redirectUris": [],
+      "standardFlowEnabled": true,
+      "serviceAccountsEnabled": true,
+      "directAccessGrantsEnabled": true,
+      "authorizationServicesEnabled": true,
+      "webOrigins": [],
+      "optionalClientScopes": [
+        "events_api_user",
+        "aggregator_api_user"
+      ]
     }
   ],
   "users": [

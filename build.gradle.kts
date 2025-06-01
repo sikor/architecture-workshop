@@ -1,14 +1,4 @@
-plugins {
-    id("org.springframework.boot") version "3.4.5" apply false
-    id("io.spring.dependency-management") version "1.1.4" apply false
-}
 
-allprojects {
-    repositories {
-        mavenCentral()
-        gradlePluginPortal()
-    }
-}
 
 fun loadEnvFileWithDefaults(file: File): Map<String, String> {
     return file.readLines()
@@ -27,7 +17,6 @@ fun loadEnvFileWithDefaults(file: File): Map<String, String> {
 
 subprojects {
     val envFileName = "${project.name}-local.env"
-
     tasks.withType<Test>().configureEach {
         val envFile = project.file("src/test/resources/$envFileName")
         if (envFile.exists()) {

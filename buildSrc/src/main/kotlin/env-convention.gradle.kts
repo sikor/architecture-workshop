@@ -1,13 +1,3 @@
-plugins {
-    id("com.avast.gradle.docker-compose")
-    id("tests-convention")
-}
-
-dockerCompose {
-    useComposeFiles = listOf("local-env/docker-compose.yml")
-    startedServices = listOf("postgresql", "keycloak")
-}
-
 
 fun loadEnvFileWithDefaults(file: File): Map<String, String> {
     return file.readLines()
@@ -24,8 +14,8 @@ fun loadEnvFileWithDefaults(file: File): Map<String, String> {
         }.toMap()
 }
 
-
 val envFileName = "${project.name}-local.env"
+
 tasks.withType<Test>().configureEach {
     val envFile = project.file("src/test/resources/$envFileName")
     if (envFile.exists()) {

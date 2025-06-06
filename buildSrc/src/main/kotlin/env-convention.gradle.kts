@@ -14,21 +14,22 @@ fun loadEnvFileWithDefaults(file: File): Map<String, String> {
         }.toMap()
 }
 
+val extension = project.extensions.create("envConvention", EnvConventionExtension::class.java)
+
 val envFileName = "${project.name}-local.env"
+val envFile = project.file(envFileName)
+if (envFile.exists()) {
+    val envVars = loadEnvFileWithDefaults(envFile)
+    extension.envVars = envVars
+    logger.lifecycle("Env file found for '${project.name}' at: $envFile")
 
-tasks.withType<Test>().configureEach {
-    val envFile = project.file("src/test/resources/$envFileName")
-    if (envFile.exists()) {
-        environment(loadEnvFileWithDefaults(envFile))
-        logger.info("Env file found for '${project.name}' at: $envFile")
+    // Apply env vars to Test tasks
+    project.tasks.withType<Test>().configureEach {
+        environment(envVars)
+    }
+
+    // Apply env vars to JavaExec tasks (for bootRun, etc)
+    project.tasks.withType<JavaExec>().configureEach {
+        environment(envVars)
     }
 }
-
-tasks.withType<JavaExec>().configureEach {
-    val envFile = project.file("src/main/resources/$envFileName")
-    if (envFile.exists()) {
-        environment(loadEnvFileWithDefaults(envFile))
-        logger.info("Env file found for '${project.name}' at: $envFile")
-    }
-}
-

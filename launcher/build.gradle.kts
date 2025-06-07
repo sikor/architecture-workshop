@@ -17,10 +17,10 @@ fun waitForHealthCheck(url: String, retries: Int = 30, delayMillis: Long = 1000)
                 logger.lifecycle("Health check passed: $url")
                 return
             } else {
-                logger.lifecycle("Health check failed: $url (attempt ${attempt+1}): HTTP ${connection.responseCode}")
+                logger.lifecycle("Health check failed: $url (attempt ${attempt + 1}): HTTP ${connection.responseCode}")
             }
         } catch (ex: Exception) {
-            logger.lifecycle("Health check error: $url (attempt ${attempt+1}): ${ex.message}")
+            logger.lifecycle("Health check error: $url (attempt ${attempt + 1}): ${ex.message}")
         }
 
         Thread.sleep(delayMillis)
@@ -28,6 +28,13 @@ fun waitForHealthCheck(url: String, retries: Int = 30, delayMillis: Long = 1000)
     throw RuntimeException("App did not become healthy: $url")
 }
 
+fun destroyProcesses(process: ProcessHandle) {
+    process.destroy()
+    process.onExit().get(2, TimeUnit.MINUTES)
+    process.descendants().forEach {
+        destroyProcesses(it)
+    }
+}
 
 val processes = mutableListOf<Process>()
 val envVars = extensions.getByType<EnvConventionExtension>().envVars
@@ -43,12 +50,12 @@ fun runSpringApp(module: String, envVar: String) {
         project.rootProject.projectDir.resolve("gradlew").absolutePath
     }
 
-    val process = ProcessBuilder(gradlew, ":$module:bootRun")
+    val builder = ProcessBuilder(gradlew, ":$module:bootRun")
         .inheritIO()
-        .start()
+    val process = builder.start()
     processes.add(process)
 
-    logger.lifecycle(process.info().toString())
+    logger.lifecycle(builder.command().toString())
     // Wait for health
     waitForHealthCheck("$address/actuator/health")
 }
@@ -58,11 +65,13 @@ tasks.register("startApps") {
     doLast {
         runSpringApp("events", "EVENTS_API_BASE_URL")
         runSpringApp("aggregator", "AGGREGATOR_API_BASE_URL")
+    }
+}
 
-        Runtime.getRuntime().addShutdownHook(Thread {
-            logger.info("Destroying apps")
-            processes.forEach { it.destroy() }
-        })
+tasks.register("stopApps") {
+    doLast {
+        logger.lifecycle("Destroying apps")
+        processes.forEach { destroyProcesses(it.toHandle()) }
     }
 }
 

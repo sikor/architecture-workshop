@@ -16,8 +16,7 @@ dependencies {
 
     // Include your modules
     implementation(project(":commons"))
-    implementation(project(":events"))
-    implementation(project(":aggregator"))
+    implementation(project(":launcher"))
 }
 
 tasks.test {

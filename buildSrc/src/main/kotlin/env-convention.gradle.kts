@@ -16,7 +16,7 @@ fun loadEnvFileWithDefaults(file: File): Map<String, String> {
 
 val extension = project.extensions.create("envConvention", EnvConventionExtension::class.java)
 
-val envFileName = "${project.name}-local.env"
+val envFileName = "src/test/resources/${project.name}-local.env"
 val envFile = project.file(envFileName)
 if (envFile.exists()) {
     val envVars = loadEnvFileWithDefaults(envFile)

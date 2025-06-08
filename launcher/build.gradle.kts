@@ -3,7 +3,20 @@ import java.net.URL
 
 plugins {
     id("env-convention")
+    id("java")
 }
+
+dependencies {
+
+    implementation(enforcedPlatform("org.springframework.boot:spring-boot-dependencies:3.4.5"))
+
+
+    // Include your modules
+    implementation(project(":commons"))
+    implementation(project(":events"))
+    implementation(project(":aggregator"))
+}
+
 
 fun waitForHealthCheck(url: String, retries: Int = 30, delayMillis: Long = 1000) {
     repeat(retries) { attempt ->

@@ -3,8 +3,7 @@ package com.archiwork.e2e;
 import com.archiwork.commons.restClient.AccessTokenProvider;
 import com.archiwork.commons.restClient.ApiProperties;
 import com.archiwork.commons.restClient.RestClientConfig;
-import com.archiwork.e2e.utils.AppLauncher;
-import com.archiwork.e2e.utils.DockerComposeLauncher;
+import com.archiwork.launcher.AppLauncher;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
@@ -17,9 +16,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.Socket;
 import java.net.URL;
 
 import static org.hamcrest.Matchers.*;
@@ -60,56 +56,16 @@ public class AggregateEventsTest {
 
     @BeforeAll
     void beforeAll() {
-        URL tokenUrl = apiProperties.tokenUri();
-        URL eventsUrl = getEventsUrl();
-        URL aggregatorUrl = getAggregatorUrl();
-
-        boolean tokenIsLocalhost = isLocalhost(tokenUrl);
-        boolean eventsIsLocalhost = isLocalhost(eventsUrl);
-        boolean aggregatorIsLocalhost = isLocalhost(aggregatorUrl);
-
-        boolean tokensReachable = isTcpReachable(tokenUrl);
-        boolean eventsReachable = isTcpReachable(eventsUrl);
-        boolean aggregatorReachable = isTcpReachable(aggregatorUrl);
-
-        if (tokenIsLocalhost && !tokensReachable) {
-            DockerComposeLauncher.start();
-        }
-
-        if (eventsIsLocalhost &&
-                aggregatorIsLocalhost &&
-                !eventsReachable &&
-                !aggregatorReachable) {
-            AppLauncher.startApps();
-        }
-
+        AppLauncher.startAppsWithDependenciesIfNeededAndPossible(
+                apiProperties.tokenUri(),
+                getEventsUrl(),
+                getAggregatorUrl());
     }
 
-    private boolean isTcpReachable(URL url) {
-        String host = url.getHost();
-        int port = url.getPort() != -1 ? url.getPort() : url.getDefaultPort();
-
-        try (Socket socket = new Socket()) {
-            socket.connect(new InetSocketAddress(host, port), 2000);
-            return true;
-        } catch (IOException e) {
-            return false;
-        }
-    }
-
-    private boolean isLocalhost(URL url) {
-        String host = url.getHost();
-        return "localhost".equalsIgnoreCase(host) || "127.0.0.1".equals(host);
-    }
 
     @AfterAll
     public void afterAll() {
-        try {
-            AppLauncher.stopApps();
-        } catch (Exception e) {
-            logger.error("Failed to stop apps", e);
-        }
-        DockerComposeLauncher.stop();
+        AppLauncher.stopAppsWithDependenciesIfWereStarted();
     }
 
     @Test

@@ -1,10 +1,10 @@
-package com.archiwork.e2e.utils;
+package com.archiwork.launcher;
 
 import java.io.IOException;
 
 public class DockerComposeLauncher {
 
-    private static final String COMPOSE_FILE = "../local-env/docker-compose.yml";
+    private static final String COMPOSE_FILE = "local-env/docker-compose.yml";
 
     private static boolean wasStarted = false;
 

@@ -30,5 +30,13 @@ public record ApiProperties(
     public Optional<ApiBaseUrl> getAggregatorUrl() {
         return Optional.ofNullable(aggregator);
     }
+
+    public URL requireEventsBaseUrl() {
+        return requireEventsApi().baseUrl();
+    }
+
+    public URL requireAggregatorBaseUrl() {
+        return requireAggregatorApi().baseUrl();
+    }
 }
 

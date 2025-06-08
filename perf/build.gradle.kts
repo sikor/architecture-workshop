@@ -9,8 +9,10 @@ repositories {
 
 dependencies {
     implementation(enforcedPlatform("org.springframework.boot:spring-boot-dependencies:3.4.5"))
+
     // Add internal modules
     testImplementation(project(":commons")) // For token logic reuse
+    testImplementation(project(":launcher"))
 
     testImplementation("us.abstracta.jmeter:jmeter-java-dsl:1.29.1") {
         exclude("org.apache.jmeter", "bom") // Exclude missing BOM to avoid resolution errors

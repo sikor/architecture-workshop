@@ -16,8 +16,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.net.URL;
-
 import static org.hamcrest.Matchers.*;
 
 @SpringBootTest(properties = "spring.profiles.active=e2e", classes = RestClientConfig.class)
@@ -40,14 +38,6 @@ public class AggregateEventsTest {
         return givenToken(RestClientConfig.AGGREGATOR);
     }
 
-    private URL getEventsUrl() {
-        return apiProperties.requireEventsApi().baseUrl();
-    }
-
-    private URL getAggregatorUrl() {
-        return apiProperties.requireAggregatorApi().baseUrl();
-    }
-
     private RequestSpecification givenToken(String registrationId) {
         String token = accessTokenProvider.getToken(registrationId);
         return RestAssured.given()
@@ -58,8 +48,8 @@ public class AggregateEventsTest {
     void beforeAll() {
         AppLauncher.startAppsWithDependenciesIfNeededAndPossible(
                 apiProperties.tokenUri(),
-                getEventsUrl(),
-                getAggregatorUrl());
+                apiProperties.requireEventsBaseUrl(),
+                apiProperties.requireAggregatorBaseUrl());
     }
 
 
@@ -84,14 +74,14 @@ public class AggregateEventsTest {
         Response postResponse = givenEventsToken()
                 .header("Content-Type", "application/json")
                 .body(payload)
-                .post(getEventsUrl() + "/commands")
+                .post(apiProperties.requireEventsBaseUrl() + "/commands")
                 .then()
                 .statusCode(200)
                 .extract()
                 .response();
 
         givenAggregatorToken()
-                .get(getAggregatorUrl() + "/map/stats")
+                .get(apiProperties.requireAggregatorBaseUrl() + "/map/stats")
                 .then()
                 .statusCode(200)
                 .body(notNullValue());

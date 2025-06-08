@@ -54,8 +54,7 @@ public class PerformanceTest {
 
         TestPlanStats stats = testPlan(
                 threadGroup()
-                        .rampToAndHold(1, Duration.ofSeconds(10), Duration.ofSeconds(10))
-                        .rampToAndHold(2, Duration.ofSeconds(10), Duration.ofSeconds(10))
+                        .rampToAndHold(2, Duration.ofSeconds(5), Duration.ofSeconds(5))
                         .children(
                                 httpSampler(url.toString() + "/commands")
                                         .method("POST")

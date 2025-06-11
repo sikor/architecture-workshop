@@ -36,6 +36,8 @@ public class AppLauncher {
                 !eventsReachable &&
                 !aggregatorReachable) {
             AppLauncher.startApps();
+        } else {
+            logger.info("Apps already started");
         }
     }
 
@@ -49,6 +51,7 @@ public class AppLauncher {
     }
 
     public static void startApps() {
+        logger.info("Starting apps");
         eventsContext = EventsApplication.createApplication()
                 .properties(Env.loadEnvFromClasspath("events-local.env"))
                 .properties("spring.flyway.locations=classpath:db/migration/events")
@@ -64,9 +67,6 @@ public class AppLauncher {
         if (aggregatorContext != null) aggregatorContext.close();
         if (eventsContext != null) eventsContext.close();
     }
-
-
-
 
     private static boolean isTcpReachable(URL url) {
         String host = url.getHost();

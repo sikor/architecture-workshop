@@ -1,10 +1,5 @@
 plugins {
     id("java")
-    id("env-convention")
-}
-
-repositories {
-    mavenCentral()
 }
 
 dependencies {
@@ -20,6 +15,11 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.10.2")
     testImplementation("org.assertj:assertj-core:3.24.2")
     testImplementation("org.springframework.boot:spring-boot-starter-test:3.4.5")
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
 }
 
 tasks.test {

@@ -1,12 +1,11 @@
 package com.archiwork.aggregator;
 
+import com.archiwork.commons.Env;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
-import org.springframework.scheduling.annotation.EnableScheduling;
 
 @OpenAPIDefinition(
         info = @Info(
@@ -20,11 +19,12 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class AggregatorApplication {
 
     public static void main(String[] args) {
-        createApplication().run(args);
+        createApplicationWithDefaultProperties().run(args);
     }
 
-    public static SpringApplicationBuilder createApplication() {
+    public static SpringApplicationBuilder createApplicationWithDefaultProperties() {
         return new SpringApplicationBuilder(AggregatorApplication.class)
-                .properties("spring.config.name=application-aggregator");
+                .properties("spring.config.name=application-aggregator")
+                .properties(Env.loadEnvFromClasspath("aggregator-local.env"));
     }
 }

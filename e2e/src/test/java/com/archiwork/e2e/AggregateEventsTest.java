@@ -1,5 +1,6 @@
 package com.archiwork.e2e;
 
+import com.archiwork.commons.DefaultPropertiesLoader;
 import com.archiwork.commons.restClient.AccessTokenProvider;
 import com.archiwork.commons.restClient.ApiProperties;
 import com.archiwork.commons.restClient.RestClientConfig;
@@ -15,10 +16,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
 
 import static org.hamcrest.Matchers.*;
 
 @SpringBootTest(properties = "spring.profiles.active=e2e", classes = RestClientConfig.class)
+@ContextConfiguration(initializers = Initializer.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class AggregateEventsTest {
 
@@ -85,5 +88,13 @@ public class AggregateEventsTest {
                 .then()
                 .statusCode(200)
                 .body(notNullValue());
+    }
+}
+
+class Initializer extends DefaultPropertiesLoader {
+
+    @Override
+    protected String getConfigFileName() {
+        return "e2e-local.env";
     }
 }

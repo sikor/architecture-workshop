@@ -4,7 +4,6 @@ include("aggregator")
 include("commons")
 include("e2e")
 include("perf")
-include("local-env")
 include("launcher")
 
 pluginManagement {

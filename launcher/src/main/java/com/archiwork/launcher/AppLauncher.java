@@ -53,12 +53,10 @@ public class AppLauncher {
     public static void startApps() {
         logger.info("Starting apps");
         eventsContext = EventsApplication.createApplication()
-                .properties(Env.loadEnvFromClasspath("events-local.env"))
                 .properties("spring.flyway.locations=classpath:db/migration/events")
                 .run();
 
-        aggregatorContext = AggregatorApplication.createApplication()
-                .properties(Env.loadEnvFromClasspath("aggregator-local.env"))
+        aggregatorContext = AggregatorApplication.createApplicationWithDefaultProperties()
                 .properties("spring.flyway.locations=classpath:db/migration/aggregator")
                 .run();
     }

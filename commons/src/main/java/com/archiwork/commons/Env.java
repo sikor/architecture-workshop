@@ -1,4 +1,4 @@
-package com.archiwork.launcher;
+package com.archiwork.commons;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

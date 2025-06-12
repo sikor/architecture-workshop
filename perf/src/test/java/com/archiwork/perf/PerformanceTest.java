@@ -1,5 +1,6 @@
 package com.archiwork.perf;
 
+import com.archiwork.commons.DefaultPropertiesLoader;
 import com.archiwork.commons.restClient.ApiProperties;
 import com.archiwork.commons.restClient.RestClientConfig;
 import com.archiwork.commons.restClient.AccessTokenProvider;
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
 import us.abstracta.jmeter.javadsl.core.TestPlanStats;
 
 import java.net.URL;
@@ -22,6 +24,7 @@ import static us.abstracta.jmeter.javadsl.JmeterDsl.*;
         properties = "spring.profiles.active=perf",
         classes = {RestClientConfig.class}
 )
+@ContextConfiguration(initializers = Initializer.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class PerformanceTest {
 
@@ -76,5 +79,13 @@ public class PerformanceTest {
 
 
         System.out.println("✅ Performance test completed. JTL report available at: " + reportDir);
+    }
+}
+
+class Initializer extends DefaultPropertiesLoader {
+
+    @Override
+    protected String getConfigFileName() {
+        return "perf-local.env";
     }
 }

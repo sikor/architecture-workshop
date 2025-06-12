@@ -1,5 +1,6 @@
 package com.archiwork.events;
 
+import com.archiwork.commons.Env;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
 import org.springframework.boot.SpringApplication;
@@ -25,6 +26,7 @@ public class EventsApplication {
 
     public static SpringApplicationBuilder createApplication() {
         return new SpringApplicationBuilder(EventsApplication.class)
-                .properties("spring.config.name=application-events");
+                .properties("spring.config.name=application-events")
+                .properties(Env.loadEnvFromClasspath("events-local.env"));
     }
 }

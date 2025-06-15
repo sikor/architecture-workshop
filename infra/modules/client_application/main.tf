@@ -23,7 +23,7 @@ variable "key_vault_id" {
 }
 
 resource "azuread_application" "client" {
-  display_name     = "${var.client_name_prefix}-client"
+  display_name     = "${var.client_name_prefix}-client-app"
   sign_in_audience = "AzureADMyOrg"
 
   required_resource_access {
@@ -51,11 +51,11 @@ resource "azuread_service_principal" "client_sp" {
 
 resource "azuread_application_password" "client_ad_secret" {
   application_id = azuread_application.client.id
-  display_name          = "${var.client_name_prefix}-ad-secret"
+  display_name          = "${var.client_name_prefix}-secret"
 }
 
 resource "azurerm_key_vault_secret" "client_secret" {
-  name         = "${var.client_name_prefix}-ad-secret"
+  name         = "${var.client_name_prefix}-secret"
   value        = azuread_application_password.client_ad_secret.value
   key_vault_id = var.key_vault_id
 }

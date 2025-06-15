@@ -23,11 +23,20 @@ output "current_terraform_oid" {
 }
 
 output "e2e_client_id" {
-  value     = azuread_application.e2e_client.client_id
+  value     = module.e2e_client.client_id
 }
 
 output "e2e_client_secret" {
-  value     = azuread_application_password.e2e_ad_secret.value
+  value     = module.e2e_client.client_secret
+  sensitive = true
+}
+
+output "perf_client_id" {
+  value     = module.perf_client.client_id
+}
+
+output "perf_client_secret" {
+  value     = module.perf_client.client_secret
   sensitive = true
 }
 

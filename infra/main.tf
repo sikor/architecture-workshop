@@ -64,6 +64,25 @@ module aggregator_app {
 
 }
 
+module e2e_client {
+  source = "./modules/client_application"
+  client_name_prefix = "e2e"
+  events_app_client_id = module.events_app.app_client_id
+  events_app_scope_id = module.events_app.app_scope_id
+  aggregator_app_client_id = module.aggregator_app.app_client_id
+  aggregator_app_scope_id = module.aggregator_app.app_scope_id
+  key_vault_id = module.key_vault.key_vault_id
+}
+
+module perf_client {
+  source = "./modules/client_application"
+  client_name_prefix = "perf"
+  events_app_client_id = module.events_app.app_client_id
+  events_app_scope_id = module.events_app.app_scope_id
+  aggregator_app_client_id = module.aggregator_app.app_client_id
+  aggregator_app_scope_id = module.aggregator_app.app_scope_id
+  key_vault_id = module.key_vault.key_vault_id
+}
 
 # export TF_VAR_subscription_id=$(az account show --query id --output tsv) ba90069d-9e46-4163-9570-1b2bd4db55d4
 # az ad sp create-for-rbac --name "architecture-workshops-sikor-github" --role Contributor --scopes /subscriptions/ba90069d-9e46-4163-9570-1b2bd4db55d4 --sdk-auth

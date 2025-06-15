@@ -60,9 +60,12 @@ jobs:
           echo "token_uri=$(terraform output -raw token_uri)" >> "$GITHUB_OUTPUT"
           echo "e2e_client_id=$(terraform output -raw e2e_client_id)" >> "$GITHUB_OUTPUT"
           echo "e2e_client_secret=$(terraform output -raw e2e_client_secret)" >> "$GITHUB_OUTPUT"
+          echo "perf_client_id=$(terraform output -raw perf_client_id)" >> "$GITHUB_OUTPUT"
+          echo "perf_client_secret=$(terraform output -raw perf_client_secret)" >> "$GITHUB_OUTPUT"
           
           # Mask the secret so it never appears in logs
           echo "::add-mask::$(terraform output -raw e2e_client_secret)"
+          echo "::add-mask::$(terraform output -raw perf_client_secret)"
         working-directory: infra
 
       - name: Set up Java 21
@@ -114,3 +117,13 @@ jobs:
           AGGREGATOR_API_BASE_URL: ${{ steps.tf_outputs.outputs.aggregator_app_url }}
           EVENTS_APP_SCOPE: ${{ steps.tf_outputs.outputs.events_app_client_credentials_scope }}
           AGGREGATOR_APP_SCOPE: ${{ steps.tf_outputs.outputs.aggregator_app_client_credentials_scope }}
+
+      - name: Echo e2e and perf config
+        run: |
+          echo "TOKEN_URI: ${{ steps.tf_outputs.outputs.token_uri }}"
+          echo "E2E_CLIENT_ID: ${{ steps.tf_outputs.outputs.e2e_client_id }}"
+          echo "PERF_CLIENT_ID: ${{ steps.tf_outputs.outputs.perf_client_id }}"
+          echo "EVENTS_API_BASE_URL: ${{ steps.tf_outputs.outputs.events_app_url }}"
+          echo "AGGREGATOR_API_BASE_URL: ${{ steps.tf_outputs.outputs.aggregator_app_url }}"
+          echo "EVENTS_APP_SCOPE: ${{ steps.tf_outputs.outputs.events_app_client_credentials_scope }}"
+          echo "AGGREGATOR_APP_SCOPE: ${{ steps.tf_outputs.outputs.aggregator_app_client_credentials_scope }}"

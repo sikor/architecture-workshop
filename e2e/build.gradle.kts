@@ -27,10 +27,7 @@ tasks.test {
     useJUnitPlatform()
 }
 
-tasks.register("e2eTest") {
-    dependsOn(":events:build", ":aggregator:build", ":e2e:test")
-}
-
-tasks.named("compileTestJava") {
-    dependsOn(":events:classes", ":aggregator:classes", ":commons:classes")
+tasks.register<RemoteTestTask>("remoteTest") {
+    group = "verification"
+    description = "Runs tests with environment configured via Terraform outputs"
 }

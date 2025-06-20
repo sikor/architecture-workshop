@@ -1,3 +1,4 @@
+import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.testing.Test;
 import org.gradle.process.ExecOperations;
 
@@ -15,31 +16,36 @@ public abstract class RemoteTestTask extends Test {
         this.execOps = execOps;
 
         useJUnitPlatform();
+    }
 
-        doFirst(task -> {
-            String accountCheck = execAndCapture(new String[]{"az", "account", "show"}, new File("."));
-            if (accountCheck.contains("Please run 'az login'")) {
-                System.out.println("🔐 Logging into Azure...");
-                execOps.exec(spec -> spec.commandLine("az", "login"));
-            } else {
-                System.out.println("✅ Already logged into Azure.");
-            }
+    @Override
+    @TaskAction
+    public void executeTests() {
+        String accountCheck = execAndCapture(new String[]{"C:\\Program Files\\Microsoft SDKs\\Azure\\CLI2\\wbin\\az.cmd", "account", "show"}, new File("."));
+        if (accountCheck.contains("Please run 'az login'")) {
+            System.out.println("🔐 Logging into Azure...");
+            execOps.exec(spec -> spec.commandLine("C:\\Program Files\\Microsoft SDKs\\Azure\\CLI2\\wbin\\az.cmd", "login"));
+        } else {
+            System.out.println("✅ Already logged into Azure.");
+        }
 
-            System.out.println("🚀 Running terraform init...");
-            execOps.exec(spec -> {
-                spec.setWorkingDir(getProject().file("../infra"));
-                spec.commandLine("terraform", "init", "-input=false");
-            });
-
-            System.out.println("📥 Reading terraform outputs...");
-            environment("TOKEN_URI", terraformOutput("token_uri"));
-            environment("CLIENT_ID", terraformOutput("e2e_client_id"));
-            environment("CLIENT_SECRET", terraformOutput("e2e_client_secret"));
-            environment("EVENTS_API_BASE_URL", terraformOutput("events_app_url"));
-            environment("AGGREGATOR_API_BASE_URL", terraformOutput("aggregator_app_url"));
-            environment("EVENTS_APP_SCOPE", terraformOutput("events_app_client_credentials_scope"));
-            environment("AGGREGATOR_APP_SCOPE", terraformOutput("aggregator_app_client_credentials_scope"));
+        System.out.println("🚀 Running terraform init...");
+        execOps.exec(spec -> {
+            spec.setWorkingDir(getProject().file("../infra"));
+            spec.commandLine("terraform", "init", "-input=false");
         });
+
+        System.out.println("📥 Reading terraform outputs...");
+        environment("TOKEN_URI", terraformOutput("token_uri"));
+        environment("CLIENT_ID", terraformOutput("e2e_client_id"));
+        environment("CLIENT_SECRET", terraformOutput("e2e_client_secret"));
+        environment("EVENTS_API_BASE_URL", terraformOutput("events_app_url"));
+        environment("AGGREGATOR_API_BASE_URL", terraformOutput("aggregator_app_url"));
+        environment("EVENTS_APP_SCOPE", terraformOutput("events_app_client_credentials_scope"));
+        environment("AGGREGATOR_APP_SCOPE", terraformOutput("aggregator_app_client_credentials_scope"));
+
+
+        super.executeTests();
     }
 
     private String execAndCapture(String[] command, File workingDir) {

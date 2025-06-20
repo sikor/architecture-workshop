@@ -32,21 +32,21 @@ jobs:
 
       - name: Terraform Init
         run: terraform init -backend-config=${{ vars.TF_BACKEND_CONFIG }}
-        working-directory: infra
+        working-directory: infra/src/tf/main
 
       - name: Terraform Apply Key Vault
         run: |
           terraform plan -out=tfplan.key_vault -target=module.key_vault -var-file=${{ vars.TF_VARS_CONFIG }}
           terraform apply tfplan.key_vault
-        working-directory: infra
+        working-directory: infra/src/tf/main
 
       - name: Terraform Plan
         run: terraform plan -out=tfplan -var-file=${{ vars.TF_VARS_CONFIG }}
-        working-directory: infra
+        working-directory: infra/src/tf/main
 
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
-        working-directory: infra
+        working-directory: infra/src/tf/main
 
       - name: Get Terraform outputs
         id: tf_outputs
@@ -66,7 +66,7 @@ jobs:
           # Mask the secret so it never appears in logs
           echo "::add-mask::$(terraform output -raw e2e_client_secret)"
           echo "::add-mask::$(terraform output -raw perf_client_secret)"
-        working-directory: infra
+        working-directory: infra/src/tf/main
 
       - name: Set up Java 21
         uses: actions/setup-java@v3

@@ -16,7 +16,7 @@ resource "azurerm_resource_group" "project_rg" {
 data "azurerm_client_config" "current" {}
 
 module key_vault {
-  source = "modules/key_vault"
+  source = "./modules/key_vault"
 
   key_vault_name       = local.kv_name
   location             = azurerm_resource_group.project_rg.location
@@ -27,7 +27,7 @@ module key_vault {
 }
 
 module events_app {
-  source = "modules/app_service"
+  source = "./modules/app_service"
 
   app_base_name = "archiwork-events"
   location = azurerm_resource_group.project_rg.location
@@ -45,7 +45,7 @@ module events_app {
 }
 
 module aggregator_app {
-  source = "modules/app_service"
+  source = "./modules/app_service"
 
   app_base_name = "archiwork-aggregator"
   location = azurerm_resource_group.project_rg.location
@@ -65,7 +65,7 @@ module aggregator_app {
 }
 
 module e2e_client {
-  source = "modules/client_application"
+  source = "./modules/client_application"
   client_name_prefix = "e2e"
   events_app_client_id = module.events_app.app_client_id
   events_app_scope_id = module.events_app.app_scope_id
@@ -75,7 +75,7 @@ module e2e_client {
 }
 
 module perf_client {
-  source = "modules/client_application"
+  source = "./modules/client_application"
   client_name_prefix = "perf"
   events_app_client_id = module.events_app.app_client_id
   events_app_scope_id = module.events_app.app_scope_id

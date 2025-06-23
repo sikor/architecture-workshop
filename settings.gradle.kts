@@ -14,6 +14,7 @@ pluginManagement {
         id("io.spring.dependency-management") version "1.1.4"
         id("org.gradle.kotlin.kotlin-dsl") version "5.2.0"
         id("org.ysb33r.terraform") version "2.0.0"
+        id("org.ysb33r.terraform.rc") version "2.0.0"
     }
     repositories {
         gradlePluginPortal()

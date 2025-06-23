@@ -1,34 +1,24 @@
-
-
 import org.gradle.api.GradleException;
 import org.gradle.api.provider.MapProperty;
-import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.Input;
-import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.testing.Test;
-import org.gradle.process.ExecOperations;
 import org.ysb33r.gradle.terraform.TerraformSourceSet;
 import org.ysb33r.gradle.terraform.extensions.TerraformExtension;
 
-import javax.inject.Inject;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.util.HashMap;
 import java.util.Map;
 
 public abstract class AbstractRemoteTestTask extends Test {
 
-    private final ExecOperations execOps;
+    private final MapProperty<String, String> terraformToEnvMappings;
+    private final MapProperty<String, Object> outputVariables;
 
-    @Input
-    public abstract MapProperty<String, String> getTerraformToEnvMappings();
+    public AbstractRemoteTestTask() {
+        super();
 
-    private final Map<String, Provider<String>> resolvedOutputs = new HashMap<>();
+        this.terraformToEnvMappings = getObjectFactory().mapProperty(String.class, String.class);
+        this.outputVariables = getObjectFactory().mapProperty(String.class, Object.class);
 
-    @Inject
-    public AbstractRemoteTestTask(ExecOperations execOps) {
-        this.execOps = execOps;
         useJUnitPlatform();
 
         TerraformExtension terraform = getProject().getExtensions().findByType(TerraformExtension.class);
@@ -37,37 +27,30 @@ public abstract class AbstractRemoteTestTask extends Test {
         }
 
         TerraformSourceSet sourceSet = terraform.getSourceSets().getByName("main");
+        this.outputVariables.set(sourceSet.rawOutputVariables());
+    }
 
-        for (Map.Entry<String, String> entry : getTerraformToEnvMappings().get().entrySet()) {
-            String terraformOutputName = entry.getKey();
-            String envVarName = entry.getValue();
-            resolvedOutputs.put(envVarName, sourceSet.rawOutputVariable(terraformOutputName).map(Object::toString));
-        }
+    @Input
+    public MapProperty<String, String> getTerraformToEnvMappings() {
+        return terraformToEnvMappings;
+    }
+
+    @Input
+    public MapProperty<String, Object> getOutputVariables() {
+        return outputVariables;
     }
 
     @TaskAction
     public void executeTests() {
-        // Inject environment variables
         System.out.println("📥 Injecting Terraform output values as environment variables...");
-        for (Map.Entry<String, Provider<String>> entry : resolvedOutputs.entrySet()) {
-            String envVarName = entry.getKey();
-            String value = entry.getValue().get();
+        for (Map.Entry<String, String> entry : terraformToEnvMappings.get().entrySet()) {
+            String terraformOutputName = entry.getKey();
+            String envVarName = entry.getValue();
+            Object value = outputVariables.get().get(terraformOutputName);
             environment(envVarName, value);
             System.out.printf("✅ %s = %s%n", envVarName, value);
         }
 
         super.executeTests();
-    }
-
-    private String execAndCapture(String[] command, File workingDir) {
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        execOps.exec(spec -> {
-            spec.setWorkingDir(workingDir);
-            spec.commandLine((Object[]) command);
-            spec.setIgnoreExitValue(true);
-            spec.setStandardOutput(output);
-            spec.setErrorOutput(output);
-        });
-        return output.toString().trim();
     }
 }

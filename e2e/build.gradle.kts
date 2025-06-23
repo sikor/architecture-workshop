@@ -1,5 +1,6 @@
 plugins {
     id("java")
+    id("org.ysb33r.terraform")
 }
 
 java {
@@ -27,7 +28,19 @@ tasks.test {
     useJUnitPlatform()
 }
 
-tasks.register<RemoteTestTask>("remoteTest") {
+tasks.register<AbstractRemoteTestTask>("remoteTest") {
     group = "verification"
     description = "Runs tests with environment configured via Terraform outputs"
+    terraformToEnvMappings.set(
+        mapOf(
+            "token_uri" to "TOKEN_URI",
+            "e2e_client_id" to "CLIENT_ID",
+            "e2e_client_secret" to "CLIENT_SECRET",
+            "events_app_url" to "EVENTS_API_BASE_URL",
+            "aggregator_app_url" to "AGGREGATOR_API_BASE_URL",
+            "events_app_client_credentials_scope" to "EVENTS_APP_SCOPE",
+            "aggregator_app_client_credentials_scope" to "AGGREGATOR_APP_SCOPE"
+        )
+    )
+
 }

@@ -1,6 +1,5 @@
 plugins {
     id("java")
-    id("org.ysb33r.terraform")
 }
 
 java {
@@ -22,6 +21,7 @@ dependencies {
     // Include your modules
     implementation(project(":commons"))
     implementation(project(":launcher"))
+    implementation(project(":infra", "testArtifacts"))
 }
 
 tasks.test {

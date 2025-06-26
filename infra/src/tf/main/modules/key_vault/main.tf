@@ -37,32 +37,19 @@ resource "azurerm_key_vault" "project_kv" {
   tenant_id                   = var.tenant_id
   sku_name                    = "standard"
   soft_delete_retention_days = 7
+  enable_rbac_authorization   = true
 }
 
-
-resource "azurerm_key_vault_access_policy" "admin_access" {
-  key_vault_id = azurerm_key_vault.project_kv.id
-
-  tenant_id = var.tenant_id
-  object_id = var.admin_object_id
-
-  secret_permissions = [
-    "Get",
-    "List",
-    "Set",
-    "Delete",
-    "Purge"
-  ]
+resource "azurerm_role_assignment" "keyvault_admin" {
+  scope                = azurerm_key_vault.project_kv.id
+  role_definition_name = "Key Vault Administrator" # 👈 use a built-in role
+  principal_id         = var.admin_object_id       # 👈 pass in the objectId
 }
 
-resource "azurerm_key_vault_access_policy" "portal_access" {
-  key_vault_id = azurerm_key_vault.project_kv.id
-  tenant_id    = var.tenant_id
-  object_id    = var.portal_access_object_id
-
-  secret_permissions = ["Get", "List", "Set", "Delete"]
-  key_permissions    = ["Get", "List", "Update", "Delete"]
-  certificate_permissions = ["Get", "List", "Update", "Delete"]
+resource "azurerm_role_assignment" "keyvault_personal_admin" {
+  scope                = azurerm_key_vault.project_kv.id
+  role_definition_name = "Key Vault Administrator" # 👈 use a built-in role
+  principal_id         = var.portal_access_object_id       # 👈 pass in the objectId
 }
 
 output "key_vault_id" {

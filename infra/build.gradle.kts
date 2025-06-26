@@ -1,7 +1,7 @@
 import groovy.json.JsonOutput
-import org.ysb33r.gradle.iac.base.tf.tasks.AbstractInitTask
 import org.ysb33r.gradle.terraform.backends.GenericBackend
 import org.ysb33r.gradle.terraform.internal.TerraformModel
+import org.ysb33r.gradle.terraform.tasks.TerraformInit
 
 plugins {
     id("org.ysb33r.terraform")
@@ -17,17 +17,21 @@ terraform {
     sourceSets {
         getByName("main") {
             useBackend("azure")
+            variables {
+                files("sikor.tfvars")
+            }
         }
     }
 }
+
 
 configurations {
     create("testArtifacts")
 }
 
-tasks.named<AbstractInitTask>("tfInit") {
+tasks.named<TerraformInit>("tfInit") {
     val property = objects.property<File>()
-    property.set(project.file("src/tf/main/sikor-backend.config"))
+    property.set(project.file("sikor-backend.config"))
     backendConfigFile = property
 }
 

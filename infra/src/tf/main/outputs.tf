@@ -10,12 +10,12 @@ output "aggregator_app_name" {
 
 output "events_app_url" {
   description = "The default hostname (URL) of the Events Azure App Service"
-  value       = module.events_app.app_service_hostname
+  value       = module.events_app.app_service_url
 }
 
 output "aggregator_app_url" {
   description = "The default hostname (URL) of the Aggregator Azure App Service"
-  value       = module.aggregator_app.app_service_hostname
+  value       = module.aggregator_app.app_service_url
 }
 
 output "current_terraform_oid" {

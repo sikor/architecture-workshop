@@ -40,8 +40,8 @@ locals {
   ad_scope = "access"
   ad_identifier_scope = "${local.app_identifier_uri}/${local.ad_scope}"
   ad_client_credentials_scope = "${local.app_identifier_uri}/.default"
-  app_service_hostname = "${local.app_name}.azurewebsites.net"
-  swagger_redirect_uri = "https://${local.app_service_hostname}/swagger-ui/oauth2-redirect.html"
+  app_service_url = "https://${local.app_name}.azurewebsites.net"
+  swagger_redirect_uri = "${local.app_service_url}/swagger-ui/oauth2-redirect.html"
 
   default_app_settings = {
     "JWT_ISSUER_URI"="https://login.microsoftonline.com/${var.tenant_id}/v2.0"
@@ -186,8 +186,8 @@ resource "azurerm_monitor_diagnostic_setting" "app_logs" {
   }
 }
 
-output "app_service_hostname" {
-  value = local.app_service_hostname
+output "app_service_url" {
+  value = local.app_service_url
 }
 
 output "ad_scope" {

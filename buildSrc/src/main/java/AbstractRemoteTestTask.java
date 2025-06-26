@@ -1,4 +1,5 @@
 import org.gradle.api.provider.MapProperty;
+import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.testing.Test;
@@ -10,11 +11,13 @@ import java.util.Map;
 public abstract class AbstractRemoteTestTask extends Test {
 
     private final MapProperty<String, String> terraformToEnvMappings;
+    private final Property<File> terraformOutputsFile;
 
     public AbstractRemoteTestTask() {
         super();
 
         this.terraformToEnvMappings = getObjectFactory().mapProperty(String.class, String.class);
+        this.terraformOutputsFile = getObjectFactory().property(File.class);
 
         useJUnitPlatform();
     }
@@ -24,11 +27,16 @@ public abstract class AbstractRemoteTestTask extends Test {
         return terraformToEnvMappings;
     }
 
+    @Input
+    public Property<File> getTerraformOutputsFile() {
+        return terraformOutputsFile;
+    }
+
     @TaskAction
     public void executeTests() {
         System.out.println("📥 Injecting Terraform output values as environment variables...");
 
-        File outputsFile = getProject().getLayout().getBuildDirectory().file("terraform/outputs.json").get().getAsFile();
+        File outputsFile = getTerraformOutputsFile().get();
         if (!outputsFile.exists()) {
             throw new RuntimeException("Terraform outputs file not found: " + outputsFile.getAbsolutePath());
         }
@@ -46,7 +54,9 @@ public abstract class AbstractRemoteTestTask extends Test {
         for (Map.Entry<String, String> entry : terraformToEnvMappings.get().entrySet()) {
             String terraformOutputName = entry.getKey();
             String envVarName = entry.getValue();
-            Object value = outputs.get(terraformOutputName);
+            Object output = outputs.get(terraformOutputName);
+            @SuppressWarnings("unchecked")
+            String value = ((Map<String, String>) output).get("value");
             environment(envVarName, value);
             System.out.printf("✅ %s = %s%n", envVarName, value);
         }

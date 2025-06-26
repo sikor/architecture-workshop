@@ -26,7 +26,7 @@ terraform {
 
 
 configurations {
-    create("testArtifacts")
+    create("terraformOutputs")
 }
 
 tasks.named<TerraformInit>("tfInit") {
@@ -41,9 +41,10 @@ val tfOutputs: Provider<Map<String, Any>> = sourceSet.rawOutputVariables()
 val writeTerraformOutputs = tasks.register("writeTerraformOutputs") {
     group = "infrastructure"
     description = "Exports Terraform outputs to a JSON file"
+    dependsOn("tfCacheOutputVariables")
 
 
-    val outputVariables = objects.mapProperty(String::class, Any::class);
+    val outputVariables = objects.mapProperty(String::class, Any::class)
 
     outputVariables.set(tfOutputs)
 
@@ -52,6 +53,7 @@ val writeTerraformOutputs = tasks.register("writeTerraformOutputs") {
 
     doLast {
         val json = JsonOutput.toJson(outputVariables.get())
+        println(json)
         outputFile.get().asFile.apply {
             parentFile.mkdirs()
             writeText(json)
@@ -60,5 +62,5 @@ val writeTerraformOutputs = tasks.register("writeTerraformOutputs") {
 }
 
 artifacts {
-    add("testArtifacts", writeTerraformOutputs.map { it.outputs.files.singleFile })
+    add("terraformOutputs", writeTerraformOutputs.map { it.outputs.files.singleFile })
 }

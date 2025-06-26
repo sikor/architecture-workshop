@@ -7,6 +7,10 @@ java {
     targetCompatibility = JavaVersion.VERSION_21
 }
 
+val terraformOutputs: Configuration by configurations.creating {
+    isCanBeConsumed = false
+}
+
 dependencies {
 
     implementation(enforcedPlatform("org.springframework.boot:spring-boot-dependencies:3.4.5"))
@@ -21,7 +25,7 @@ dependencies {
     // Include your modules
     implementation(project(":commons"))
     implementation(project(":launcher"))
-    implementation(project(":infra", "testArtifacts"))
+    terraformOutputs(project(":infra", "terraformOutputs"))
 }
 
 tasks.test {
@@ -42,5 +46,5 @@ tasks.register<AbstractRemoteTestTask>("remoteTest") {
             "aggregator_app_client_credentials_scope" to "AGGREGATOR_APP_SCOPE"
         )
     )
-
+    terraformOutputsFile.set(terraformOutputs.elements.map { it.single().asFile })
 }

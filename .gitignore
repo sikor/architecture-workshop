@@ -31,3 +31,7 @@ replay_pid*
 terraform.tfstate
 terraform.tfstate.backup
 .terraform/
+terraformw
+terraformw.bat
+terraform.log
+

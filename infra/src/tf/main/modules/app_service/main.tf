@@ -35,24 +35,24 @@ variable "app_settings" {
 }
 
 locals {
-  app_name = "${var.app_base_name}-app"
-  app_identifier_uri =  "api://${local.app_name}"
-  ad_scope = "access"
-  ad_identifier_scope = "${local.app_identifier_uri}/${local.ad_scope}"
+  app_name                    = "${var.app_base_name}-app"
+  app_identifier_uri          = "api://${local.app_name}"
+  ad_scope                    = "access"
+  ad_identifier_scope         = "${local.app_identifier_uri}/${local.ad_scope}"
   ad_client_credentials_scope = "${local.app_identifier_uri}/.default"
-  app_service_url = "https://${local.app_name}.azurewebsites.net"
-  swagger_redirect_uri = "${local.app_service_url}/swagger-ui/oauth2-redirect.html"
+  app_service_url             = "https://${local.app_name}.azurewebsites.net"
+  swagger_redirect_uri        = "${local.app_service_url}/swagger-ui/oauth2-redirect.html"
 
   default_app_settings = {
-    "JWT_ISSUER_URI"="https://login.microsoftonline.com/${var.tenant_id}/v2.0"
-    "JWT_AUDIENCE"=azuread_application.app_ad.client_id
+    "JWT_ISSUER_URI"       = "https://login.microsoftonline.com/${var.tenant_id}/v2.0"
+    "JWT_AUDIENCE"         = azuread_application.app_ad.client_id
     "SWAGGER_AD_CLIENT_ID" = azuread_application.swagger_ui_client.client_id
-    "AUTHORIZATION_URL"="https://login.microsoftonline.com/${var.tenant_id}/oauth2/v2.0/authorize"
-    "TOKEN_URL"="https://login.microsoftonline.com/${var.tenant_id}/oauth2/v2.0/token"
-    "AD_CLIENT_ID" = azuread_application.app_ad.client_id
-    "AD_CLIENT_SECRET" = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.app_ad_client_secret.id})"
-    "AD_SCOPE" = local.ad_identifier_scope
-    "SERVER_PORT"="8080"
+    "AUTHORIZATION_URL"    = "https://login.microsoftonline.com/${var.tenant_id}/oauth2/v2.0/authorize"
+    "TOKEN_URL"            = "https://login.microsoftonline.com/${var.tenant_id}/oauth2/v2.0/token"
+    "AD_CLIENT_ID"         = azuread_application.app_ad.client_id
+    "AD_CLIENT_SECRET"     = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.app_ad_client_secret.id})"
+    "AD_SCOPE"             = local.ad_identifier_scope
+    "SERVER_PORT"          = "8080"
   }
 
   merged_app_settings = merge(local.default_app_settings, var.app_settings)
@@ -82,9 +82,9 @@ resource "azurerm_linux_web_app" "app" {
     container_registry_use_managed_identity = true
 
     application_stack {
-      java_server = "JAVA"
+      java_server         = "JAVA"
       java_server_version = 21
-      java_version = 21
+      java_version        = 21
     }
   }
 
@@ -158,7 +158,7 @@ resource "azuread_service_principal" "swagger_ui_sp" {
 
 resource "azuread_application_password" "app_ad_secret" {
   application_id = azuread_application.app_ad.id
-  display_name          = "${local.app_name}-ad-secret"
+  display_name   = "${local.app_name}-ad-secret"
 }
 
 resource "azurerm_key_vault_secret" "app_ad_client_secret" {
@@ -168,8 +168,8 @@ resource "azurerm_key_vault_secret" "app_ad_client_secret" {
 }
 
 resource "azurerm_monitor_diagnostic_setting" "app_logs" {
-  name               = "${local.app_name}-logs"
-  target_resource_id = azurerm_linux_web_app.app.id
+  name                       = "${local.app_name}-logs"
+  target_resource_id         = azurerm_linux_web_app.app.id
   log_analytics_workspace_id = var.log_analytics_workspace_id
 
   enabled_log {

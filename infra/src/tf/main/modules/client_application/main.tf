@@ -1,25 +1,25 @@
 variable "client_name_prefix" {
-  type        = string
+  type = string
 }
 
 variable "events_app_client_id" {
-  type        = string
+  type = string
 }
 
 variable "events_app_scope_id" {
-  type        = string
+  type = string
 }
 
 variable "aggregator_app_client_id" {
-  type        = string
+  type = string
 }
 
 variable "aggregator_app_scope_id" {
-  type        = string
+  type = string
 }
 
 variable "key_vault_id" {
-  type        = string
+  type = string
 }
 
 resource "azuread_application" "client" {
@@ -51,7 +51,7 @@ resource "azuread_service_principal" "client_sp" {
 
 resource "azuread_application_password" "client_ad_secret" {
   application_id = azuread_application.client.id
-  display_name          = "${var.client_name_prefix}-secret"
+  display_name   = "${var.client_name_prefix}-secret"
 }
 
 resource "azurerm_key_vault_secret" "client_secret" {
@@ -61,7 +61,7 @@ resource "azurerm_key_vault_secret" "client_secret" {
 }
 
 output "client_id" {
-  value     = azuread_application.client.client_id
+  value = azuread_application.client.client_id
 }
 
 output "client_secret" {

@@ -23,7 +23,7 @@ output "current_terraform_oid" {
 }
 
 output "e2e_client_id" {
-  value     = module.e2e_client.client_id
+  value = module.e2e_client.client_id
 }
 
 output "e2e_client_secret" {
@@ -32,7 +32,7 @@ output "e2e_client_secret" {
 }
 
 output "perf_client_id" {
-  value     = module.perf_client.client_id
+  value = module.perf_client.client_id
 }
 
 output "perf_client_secret" {

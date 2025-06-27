@@ -1,4 +1,3 @@
-
 variable "key_vault_name" {
   description = "Key Vault Name"
   type        = string
@@ -31,13 +30,13 @@ variable "portal_access_object_id" {
 
 
 resource "azurerm_key_vault" "project_kv" {
-  name                        = var.key_vault_name
-  location                    = var.location
-  resource_group_name         = var.resource_group_name
-  tenant_id                   = var.tenant_id
-  sku_name                    = "standard"
+  name                       = var.key_vault_name
+  location                   = var.location
+  resource_group_name        = var.resource_group_name
+  tenant_id                  = var.tenant_id
+  sku_name                   = "standard"
   soft_delete_retention_days = 7
-  enable_rbac_authorization   = true
+  enable_rbac_authorization  = true
 }
 
 resource "azurerm_role_assignment" "keyvault_admin" {
@@ -48,8 +47,8 @@ resource "azurerm_role_assignment" "keyvault_admin" {
 
 resource "azurerm_role_assignment" "keyvault_personal_admin" {
   scope                = azurerm_key_vault.project_kv.id
-  role_definition_name = "Key Vault Administrator" # 👈 use a built-in role
-  principal_id         = var.portal_access_object_id       # 👈 pass in the objectId
+  role_definition_name = "Key Vault Administrator"   # 👈 use a built-in role
+  principal_id         = var.portal_access_object_id # 👈 pass in the objectId
 }
 
 output "key_vault_id" {

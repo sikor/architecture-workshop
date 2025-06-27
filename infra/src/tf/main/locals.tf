@@ -10,13 +10,13 @@ locals {
   short_name = substr(local.base_project_name, 0, 10)
 
   # Suffixes for different resource types - project scope
-  kv_name        = "${local.short_name}-kv-${random_id.kv_suffix.hex}"
-  rg_name        = "${local.short_name}-rg"
+  kv_name = "${local.short_name}-kv-${random_id.kv_suffix.hex}"
+  rg_name = "${local.short_name}-rg"
 
   # events service scope
-  events_postgres_server_name  = "${local.short_name}-events-pgs"
-  events_postgres_db_name  = "${local.short_name}-events-pgdb"
+  events_postgres_server_name = "${local.short_name}-events-pgs"
+  events_postgres_db_name     = "${local.short_name}-events-pgdb"
 
   # aggregator service
-  aggregator_postgres_db_name  = "${local.short_name}-aggregator-pgdb"
+  aggregator_postgres_db_name = "${local.short_name}-aggregator-pgdb"
 }

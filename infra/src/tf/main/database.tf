@@ -43,8 +43,8 @@ resource "azurerm_postgresql_flexible_server_database" "aggregator_db_instance" 
 }
 
 resource "azurerm_postgresql_flexible_server_firewall_rule" "allow_azure_services" {
-  name                = "AllowAzureServices"
-  server_id = azurerm_postgresql_flexible_server.events_db.id
-  start_ip_address    = "0.0.0.0"
-  end_ip_address      = "0.0.0.0"
+  name             = "AllowAzureServices"
+  server_id        = azurerm_postgresql_flexible_server.events_db.id
+  start_ip_address = "0.0.0.0"
+  end_ip_address   = "0.0.0.0"
 }

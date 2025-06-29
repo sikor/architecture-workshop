@@ -25,7 +25,13 @@ terraform {
 
 
 configurations {
-    create("terraformOutputs")
+    create("terraformOutputs") {
+        isCanBeConsumed = true
+        isCanBeResolved = false
+        attributes {
+            attribute(Category.CATEGORY_ATTRIBUTE, objects.named(Category.LIBRARY))
+        }
+    }
 }
 
 tasks.named<TerraformInit>("tfInit") {
@@ -34,7 +40,8 @@ tasks.named<TerraformInit>("tfInit") {
     backendConfigFile = property
 }
 
-val tfOutputsFile: Provider<RegularFile> = tasks.named<TerraformOutputJson>("tfCacheOutputVariables").flatMap { it.statusReportOutputFile }
+val tfOutputsFile: Provider<RegularFile> =
+    tasks.named<TerraformOutputJson>("tfCacheOutputVariables").flatMap { it.statusReportOutputFile }
 
 val writeTerraformOutputs = tasks.register("writeTerraformOutputs") {
     group = "infrastructure"

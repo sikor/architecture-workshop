@@ -1,6 +1,7 @@
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
+import org.gradle.api.attributes.Category;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.TaskProvider;
 
@@ -16,10 +17,15 @@ public class RemoteTestPlugin implements Plugin<Project> {
         Configuration terraformOutputs = project.getConfigurations().create("terraformOutputs", config -> {
             config.setCanBeConsumed(false);
             config.setCanBeResolved(true); // Required to resolve files
+            config.attributes(aConfig -> {
+                aConfig.attribute(
+                        Category.CATEGORY_ATTRIBUTE,
+                        project.getObjects().named(Category.class, Category.LIBRARY));
+            });
         });
 
         project.getDependencies().add(terraformOutputs.getName(),
-                project.project(":infra").getConfigurations().getByName("terraformOutputs"));
+                project.project(":infra"));
 
         // Register task
         TaskProvider<AbstractRemoteTestTask> remoteTestTask = project.getTasks().register("remoteTest", AbstractRemoteTestTask.class, task -> {

@@ -18,10 +18,6 @@ output "aggregator_app_url" {
   value       = module.aggregator_app.app_service_url
 }
 
-output "current_terraform_oid" {
-  value = data.azurerm_client_config.current.object_id
-}
-
 output "e2e_client_id" {
   value = module.e2e_client.client_id
 }

@@ -1,14 +1,25 @@
 plugins {
     id("java")
+    id("com.archiwork.remoteTest")
 }
+
+remoteTest {
+    iacProjectName.set(":infra")
+    environmentVariables {
+        tfOutputToEnv("token_uri", "TOKEN_URI")
+        tfOutputToEnv("e2e_client_id", "CLIENT_ID")
+        tfOutputToEnv("e2e_client_secret", "CLIENT_SECRET")
+        tfOutputToEnv("events_app_url", "EVENTS_API_BASE_URL")
+        tfOutputToEnv("aggregator_app_url", "AGGREGATOR_API_BASE_URL")
+        tfOutputToEnv("events_app_client_credentials_scope", "EVENTS_APP_SCOPE")
+        tfOutputToEnv("aggregator_app_client_credentials_scope", "AGGREGATOR_APP_SCOPE")
+    }
+}
+
 
 java {
     sourceCompatibility = JavaVersion.VERSION_21
     targetCompatibility = JavaVersion.VERSION_21
-}
-
-val terraformOutputs: Configuration by configurations.creating {
-    isCanBeConsumed = false
 }
 
 dependencies {
@@ -25,26 +36,8 @@ dependencies {
     // Include your modules
     implementation(project(":commons"))
     implementation(project(":launcher"))
-    terraformOutputs(project(":infra", "terraformOutputs"))
 }
 
 tasks.test {
     useJUnitPlatform()
-}
-
-tasks.register<AbstractRemoteTestTask>("remoteTest") {
-    group = "verification"
-    description = "Runs tests with environment configured via Terraform outputs"
-    terraformToEnvMappings.set(
-        mapOf(
-            "token_uri" to "TOKEN_URI",
-            "e2e_client_id" to "CLIENT_ID",
-            "e2e_client_secret" to "CLIENT_SECRET",
-            "events_app_url" to "EVENTS_API_BASE_URL",
-            "aggregator_app_url" to "AGGREGATOR_API_BASE_URL",
-            "events_app_client_credentials_scope" to "EVENTS_APP_SCOPE",
-            "aggregator_app_client_credentials_scope" to "AGGREGATOR_APP_SCOPE"
-        )
-    )
-    terraformOutputsFile.set(terraformOutputs.elements.map { it.single().asFile })
 }

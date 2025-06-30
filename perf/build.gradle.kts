@@ -3,6 +3,20 @@ plugins {
     id("com.archiwork.remoteTest")
 }
 
+remoteTest {
+    iacProjectName.set(":infra")
+    environmentVariables {
+        tfOutputToEnv("token_uri", "TOKEN_URI")
+        tfOutputToEnv("perf_client_id", "CLIENT_ID")
+        tfOutputToEnv("perf_client_secret", "CLIENT_SECRET")
+        tfOutputToEnv("events_app_url", "EVENTS_API_BASE_URL")
+        tfOutputToEnv("aggregator_app_url", "AGGREGATOR_API_BASE_URL")
+        tfOutputToEnv("events_app_client_credentials_scope", "EVENTS_APP_SCOPE")
+        tfOutputToEnv("aggregator_app_client_credentials_scope", "AGGREGATOR_APP_SCOPE")
+    }
+}
+
+
 dependencies {
     implementation(enforcedPlatform("org.springframework.boot:spring-boot-dependencies:3.4.5"))
 
@@ -25,12 +39,4 @@ java {
 
 tasks.test {
     useJUnitPlatform()
-}
-
-tasks.register("perfTest") {
-    dependsOn(":commons:build", ":perf:test")
-}
-
-tasks.named("compileTestJava") {
-    dependsOn(":commons:classes")
 }

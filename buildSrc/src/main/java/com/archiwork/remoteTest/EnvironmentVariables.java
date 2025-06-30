@@ -1,4 +1,4 @@
-// TerraformOutputs.java
+package com.archiwork.remoteTest;// TerraformOutputs.java
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.MapProperty;
 

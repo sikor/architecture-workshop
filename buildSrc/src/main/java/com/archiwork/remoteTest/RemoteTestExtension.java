@@ -1,4 +1,4 @@
-// RemoteTestExtension.java
+package com.archiwork.remoteTest;// com.archiwork.remoteTest.RemoteTestExtension.java
 
 import org.gradle.api.Action;
 import org.gradle.api.model.ObjectFactory;

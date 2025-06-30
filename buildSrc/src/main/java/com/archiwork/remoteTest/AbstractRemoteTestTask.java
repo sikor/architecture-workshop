@@ -1,3 +1,8 @@
+package com.archiwork.remoteTest;
+
+import com.azure.identity.DefaultAzureCredentialBuilder;
+import com.azure.security.keyvault.secrets.SecretClient;
+import com.azure.security.keyvault.secrets.SecretClientBuilder;
 import org.gradle.api.provider.MapProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.Input;
@@ -11,13 +16,17 @@ import java.util.Map;
 public abstract class AbstractRemoteTestTask extends Test {
 
     private final MapProperty<String, String> terraformToEnvMappings;
+    private final MapProperty<String, String> keyVaultToEnvMappings;
+    private final Property<String> vaultUrlTerraformOutputName;
     private final Property<File> terraformOutputsFile;
 
     public AbstractRemoteTestTask() {
         super();
 
-        this.terraformToEnvMappings = getObjectFactory().mapProperty(String.class, String.class);
+        this.vaultUrlTerraformOutputName = getObjectFactory().property(String.class);
+        this.keyVaultToEnvMappings = getObjectFactory().mapProperty(String.class, String.class);
         this.terraformOutputsFile = getObjectFactory().property(File.class);
+        this.terraformToEnvMappings = getObjectFactory().mapProperty(String.class, String.class);
 
         useJUnitPlatform();
     }
@@ -59,6 +68,23 @@ public abstract class AbstractRemoteTestTask extends Test {
             String value = ((Map<String, String>) output).get("value");
             environment(envVarName, value);
             System.out.printf("✅ %s = %s%n", envVarName, value);
+        }
+
+        if (keyVaultToEnvMappings.isPresent()) {
+            SecretClient secretClient = new SecretClientBuilder()
+                    .vaultUrl(this.vaultUrlTerraformOutputName.get())
+                    .credential(new DefaultAzureCredentialBuilder().build())
+                    .buildClient();
+
+            for (Map.Entry<String, String> entry : keyVaultToEnvMappings.get().entrySet()) {
+                String secretName = entry.getKey();
+                String envVarName = entry.getValue();
+                String value = secretClient.getSecret(secretName).getValue();
+
+                environment(envVarName, value);
+                System.out.printf("✅ %s set%n", envVarName);
+            }
+
         }
 
         super.executeTests();

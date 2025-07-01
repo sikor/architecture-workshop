@@ -5,10 +5,11 @@ plugins {
 
 remoteTest {
     iacProjectName.set(":infra")
+    keyVaultUrlTfOutputName.set(("key_vault_url"))
     environmentVariables {
+        keyVaultToEnv("e2e-secret", "CLIENT_SECRET")
         tfOutputToEnv("token_uri", "TOKEN_URI")
         tfOutputToEnv("e2e_client_id", "CLIENT_ID")
-        tfOutputToEnv("e2e_client_secret", "CLIENT_SECRET")
         tfOutputToEnv("events_app_url", "EVENTS_API_BASE_URL")
         tfOutputToEnv("aggregator_app_url", "AGGREGATOR_API_BASE_URL")
         tfOutputToEnv("events_app_client_credentials_scope", "EVENTS_APP_SCOPE")

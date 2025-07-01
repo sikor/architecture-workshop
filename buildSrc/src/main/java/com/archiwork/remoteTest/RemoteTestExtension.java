@@ -9,11 +9,13 @@ import javax.inject.Inject;
 public abstract class RemoteTestExtension {
     private final EnvironmentVariables environmentVariables;
     private final Property<String> iacProjectName;
+    private final Property<String> keyVaultUrlTfOutputName;
 
     @Inject
     public RemoteTestExtension(ObjectFactory objects) {
         this.environmentVariables = objects.newInstance(EnvironmentVariables.class);
         this.iacProjectName = objects.property(String.class);
+        this.keyVaultUrlTfOutputName = objects.property(String.class);
     }
 
     public EnvironmentVariables getEnvironmentVariables() {
@@ -26,5 +28,9 @@ public abstract class RemoteTestExtension {
 
     public Property<String> getIacProjectName() {
         return iacProjectName;
+    }
+
+    public Property<String> getKeyVaultUrlTfOutputName() {
+        return keyVaultUrlTfOutputName;
     }
 }

@@ -17,15 +17,16 @@ public class RemoteTestPlugin implements Plugin<Project> {
         final RemoteTestExtension ext = project.getExtensions().create("remoteTest", RemoteTestExtension.class);
 
         // Create terraformOutputs configuration
-        Configuration terraformOutputs = project.getConfigurations().create("terraformOutputs", config -> {
-            config.setCanBeConsumed(false);
-            config.setCanBeResolved(true); // Required to resolve files
-            config.attributes(aConfig -> {
-                aConfig.attribute(
-                        Category.CATEGORY_ATTRIBUTE,
-                        project.getObjects().named(Category.class, Category.LIBRARY));
-            });
-        });
+        Configuration terraformOutputs =
+                project.getConfigurations().create("terraformOutputs", config -> {
+                    config.setCanBeConsumed(false);
+                    config.setCanBeResolved(true); // Required to resolve files
+                    config.attributes(aConfig -> {
+                        aConfig.attribute(
+                                Category.CATEGORY_ATTRIBUTE,
+                                project.getObjects().named(Category.class, Category.LIBRARY));
+                    });
+                });
 
 
         project.getDependencies().add(terraformOutputs.getName(),
@@ -39,8 +40,10 @@ public class RemoteTestPlugin implements Plugin<Project> {
                     task.setGroup("verification");
                     task.setDescription("Runs tests with environment configured via Terraform outputs");
 
+                    task.getVaultUrlTerraformOutputName().set(ext.getKeyVaultUrlTfOutputName());
+                    task.getKeyVaultToEnvMappings().set(ext.getEnvironmentVariables().getKeyVaultMappings());
 
-                    task.getTerraformToEnvMappings().set(ext.getEnvironmentVariables().getMappings());
+                    task.getTerraformToEnvMappings().set(ext.getEnvironmentVariables().getTfMappings());
 
                     Provider<File> outputFile = terraformOutputs.getElements()
                             .map(files -> files.iterator().next().getAsFile());

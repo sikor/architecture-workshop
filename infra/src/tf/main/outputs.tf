@@ -44,7 +44,10 @@ output "events_app_client_credentials_scope" {
   value = module.events_app.ad_client_credentials_scope
 }
 
-
 output "aggregator_app_client_credentials_scope" {
   value = module.aggregator_app.ad_client_credentials_scope
+}
+
+output "key_vault_url" {
+  value = module.key_vault.key_vault_url
 }

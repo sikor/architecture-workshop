@@ -54,3 +54,7 @@ resource "azurerm_role_assignment" "keyvault_personal_admin" {
 output "key_vault_id" {
   value = azurerm_key_vault.project_kv.id
 }
+
+output "key_vault_url" {
+  value = "https://${var.key_vault_name}.vault.azure.net/"
+}

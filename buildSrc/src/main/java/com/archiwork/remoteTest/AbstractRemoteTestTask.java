@@ -15,10 +15,10 @@ import java.util.Map;
 
 public abstract class AbstractRemoteTestTask extends Test {
 
-    private final MapProperty<String, String> terraformToEnvMappings;
-    private final MapProperty<String, String> keyVaultToEnvMappings;
     private final Property<String> vaultUrlTerraformOutputName;
+    private final MapProperty<String, String> keyVaultToEnvMappings;
     private final Property<File> terraformOutputsFile;
+    private final MapProperty<String, String> terraformToEnvMappings;
 
     public AbstractRemoteTestTask() {
         super();
@@ -41,38 +41,47 @@ public abstract class AbstractRemoteTestTask extends Test {
         return terraformOutputsFile;
     }
 
+    @Input
+    public Property<String> getVaultUrlTerraformOutputName() {
+        return vaultUrlTerraformOutputName;
+    }
+
+    @Input
+    public MapProperty<String, String> getKeyVaultToEnvMappings() {
+        return keyVaultToEnvMappings;
+    }
+
     @TaskAction
     public void executeTests() {
         System.out.println("📥 Injecting Terraform output values as environment variables...");
 
-        File outputsFile = getTerraformOutputsFile().get();
-        if (!outputsFile.exists()) {
-            throw new RuntimeException("Terraform outputs file not found: " + outputsFile.getAbsolutePath());
+        File terraformOutputs = getTerraformOutputsFile().get();
+        if (!terraformOutputs.exists()) {
+            throw new RuntimeException("Terraform outputs file not found: " + terraformOutputs.getAbsolutePath());
         }
 
         // Parse using Groovy's built-in JSON parser
-        Object rawParsed = new JsonSlurper().parse(outputsFile);
+        Object tfOutputsParsed = new JsonSlurper().parse(terraformOutputs);
 
-        if (!(rawParsed instanceof Map)) {
+        if (!(tfOutputsParsed instanceof Map)) {
             throw new RuntimeException("Unexpected format in outputs.json");
         }
 
         @SuppressWarnings("unchecked")
-        Map<String, Object> outputs = (Map<String, Object>) rawParsed;
+        Map<String, Object> outputs = (Map<String, Object>) tfOutputsParsed;
 
         for (Map.Entry<String, String> entry : terraformToEnvMappings.get().entrySet()) {
             String terraformOutputName = entry.getKey();
             String envVarName = entry.getValue();
-            Object output = outputs.get(terraformOutputName);
-            @SuppressWarnings("unchecked")
-            String value = ((Map<String, String>) output).get("value");
+            String value = getTfOutputString(outputs, terraformOutputName);
             environment(envVarName, value);
             System.out.printf("✅ %s = %s%n", envVarName, value);
         }
 
         if (keyVaultToEnvMappings.isPresent()) {
+            String keyVaultUrl = getTfOutputString(outputs, this.getVaultUrlTerraformOutputName().get());
             SecretClient secretClient = new SecretClientBuilder()
-                    .vaultUrl(this.vaultUrlTerraformOutputName.get())
+                    .vaultUrl(keyVaultUrl)
                     .credential(new DefaultAzureCredentialBuilder().build())
                     .buildClient();
 
@@ -88,5 +97,12 @@ public abstract class AbstractRemoteTestTask extends Test {
         }
 
         super.executeTests();
+    }
+
+    private static String getTfOutputString(Map<String, Object> outputs, String terraformOutputName) {
+        Object output = outputs.get(terraformOutputName);
+        @SuppressWarnings("unchecked")
+        String value = ((Map<String, String>) output).get("value");
+        return value;
     }
 }

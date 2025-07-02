@@ -1,4 +1,5 @@
 import org.ysb33r.gradle.terraform.backends.GenericBackend
+import org.ysb33r.gradle.terraform.tasks.TerraformApply
 import org.ysb33r.gradle.terraform.tasks.TerraformInit
 import org.ysb33r.gradle.terraform.tasks.TerraformOutputJson
 import org.ysb33r.gradle.terraform.tasks.TerraformPlan
@@ -41,21 +42,13 @@ tasks.named<TerraformInit>("tfInit") {
     backendConfigFile = property
 }
 
-val tfOutputsFile: Provider<RegularFile> =
-    tasks.named<TerraformOutputJson>("tfCacheOutputVariables").flatMap { it.statusReportOutputFile }
+val tfApply = tasks.named<TerraformApply>("tfApply")
 
-tasks.named<TerraformPlan>("tfPlan").configure {
-    outputs.upToDateWhen { false }
-//    inputs.file(tfOutputsFile)
-}
-
-val writeTerraformOutputs = tasks.register("writeTerraformOutputs") {
-    group = "infrastructure"
-    description = "Exports Terraform outputs to a JSON file"
-    dependsOn("tfCacheOutputVariables")
-    outputs.file(tfOutputsFile)
+val tfCacheOutputsVariables = tasks.named<TerraformOutputJson>("tfCacheOutputVariables") {
+    inputs.files(tfApply)
+    outputs.upToDateWhen { true }
 }
 
 artifacts {
-    add("terraformOutputs", writeTerraformOutputs.map { it.outputs.files.singleFile })
+    add("terraformOutputs", tfCacheOutputsVariables.map { it.statusReportOutputFile })
 }

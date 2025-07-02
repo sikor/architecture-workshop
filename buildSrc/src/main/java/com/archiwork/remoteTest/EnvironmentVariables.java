@@ -28,6 +28,6 @@ public abstract class EnvironmentVariables {
     }
 
     public void keyVaultToEnv(String secretName, String envVar) {
-        tfMappings.put(secretName, envVar);
+        keyVaultMappings.put(secretName, envVar);
     }
 }

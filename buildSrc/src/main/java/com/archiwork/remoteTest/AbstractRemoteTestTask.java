@@ -53,9 +53,11 @@ public abstract class AbstractRemoteTestTask extends Test {
 
     @TaskAction
     public void executeTests() {
-        System.out.println("📥 Injecting Terraform output values as environment variables...");
+        getLogger().lifecycle("Injecting Terraform output values as environment variables...");
 
         File terraformOutputs = getTerraformOutputsFile().get();
+
+        getLogger().lifecycle("terraform outputs file: " + terraformOutputs.getAbsolutePath());
         if (!terraformOutputs.exists()) {
             throw new RuntimeException("Terraform outputs file not found: " + terraformOutputs.getAbsolutePath());
         }
@@ -67,15 +69,14 @@ public abstract class AbstractRemoteTestTask extends Test {
             throw new RuntimeException("Unexpected format in outputs.json");
         }
 
-        @SuppressWarnings("unchecked")
-        Map<String, Object> outputs = (Map<String, Object>) tfOutputsParsed;
+        @SuppressWarnings("unchecked") final Map<String, Object> outputs = (Map<String, Object>) tfOutputsParsed;
 
         for (Map.Entry<String, String> entry : terraformToEnvMappings.get().entrySet()) {
             String terraformOutputName = entry.getKey();
             String envVarName = entry.getValue();
             String value = getTfOutputString(outputs, terraformOutputName);
             environment(envVarName, value);
-            System.out.printf("✅ %s = %s%n", envVarName, value);
+            System.out.printf("%s = %s%n", envVarName, value);
         }
 
         if (keyVaultToEnvMappings.isPresent()) {
@@ -91,7 +92,7 @@ public abstract class AbstractRemoteTestTask extends Test {
                 String value = secretClient.getSecret(secretName).getValue();
 
                 environment(envVarName, value);
-                System.out.printf("✅ %s set%n", envVarName);
+                System.out.printf("%s set%n", envVarName);
             }
 
         }
@@ -101,6 +102,9 @@ public abstract class AbstractRemoteTestTask extends Test {
 
     private static String getTfOutputString(Map<String, Object> outputs, String terraformOutputName) {
         Object output = outputs.get(terraformOutputName);
+        if (output == null) {
+            throw new RuntimeException("terraformOutput not found: " + terraformOutputName + "\n in " + outputs);
+        }
         @SuppressWarnings("unchecked")
         String value = ((Map<String, String>) output).get("value");
         return value;

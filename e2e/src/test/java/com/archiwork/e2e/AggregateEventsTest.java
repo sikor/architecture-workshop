@@ -21,7 +21,7 @@ import org.springframework.test.context.ContextConfiguration;
 import static org.hamcrest.Matchers.*;
 
 @SpringBootTest(properties = "spring.profiles.active=e2e", classes = RestClientConfig.class)
-@ContextConfiguration(initializers = Initializer.class)
+@ContextConfiguration(initializers = AggregateEventsTest.Initializer.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class AggregateEventsTest {
 
@@ -89,12 +89,12 @@ public class AggregateEventsTest {
                 .statusCode(200)
                 .body(notNullValue());
     }
-}
 
-class Initializer extends DefaultPropertiesLoader {
+    public static class Initializer extends DefaultPropertiesLoader {
 
-    @Override
-    protected String getConfigFileName() {
-        return "e2e-local.env";
+        @Override
+        protected String getConfigFileName() {
+            return "e2e-local.env";
+        }
     }
 }

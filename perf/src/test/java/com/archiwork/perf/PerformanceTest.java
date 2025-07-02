@@ -19,12 +19,13 @@ import java.time.Duration;
 import java.time.Instant;
 
 import static us.abstracta.jmeter.javadsl.JmeterDsl.*;
+import static us.abstracta.jmeter.javadsl.core.listeners.AutoStopListener.AutoStopCondition.errors;
 
 @SpringBootTest(
         properties = "spring.profiles.active=perf",
         classes = {RestClientConfig.class}
 )
-@ContextConfiguration(initializers = Initializer.class)
+@ContextConfiguration(initializers = PerformanceTest.Initializer.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class PerformanceTest {
 
@@ -56,10 +57,14 @@ public class PerformanceTest {
 
 
         TestPlanStats stats = testPlan(
-                threadGroup()
-                        .rampToAndHold(2, Duration.ofSeconds(5), Duration.ofSeconds(5))
+                httpDefaults()
+                        .connectionTimeout(Duration.ofSeconds(5))
+                        .responseTimeout(Duration.ofSeconds(10)),
+                rpsThreadGroup()
+                        .maxThreads(500)
+                        .rampToAndHold(5, Duration.ofSeconds(1), Duration.ofSeconds(5))
                         .children(
-                                httpSampler(url.toString() + "/commands")
+                                httpSampler("Commands sampler", url.toString() + "/commands")
                                         .method("POST")
                                         .header("Authorization", "Bearer " + token)
                                         .header("Content-Type", "application/json")
@@ -74,18 +79,21 @@ public class PerformanceTest {
                                                 ]
                                                 """, Instant.now()))
                         ),
+                autoStop()
+                        .when(errors().total().greaterThan(0L)), // when any sample fails, then test plan will stop and an exception will be thrown pointing to this condition.
                 jtlWriter(reportDir) // Logs details of each request
         ).run();
 
 
         System.out.println("✅ Performance test completed. JTL report available at: " + reportDir);
     }
-}
 
-class Initializer extends DefaultPropertiesLoader {
+    public static class Initializer extends DefaultPropertiesLoader {
 
-    @Override
-    protected String getConfigFileName() {
-        return "perf-local.env";
+        @Override
+        protected String getConfigFileName() {
+            return "perf-local.env";
+        }
     }
 }
+

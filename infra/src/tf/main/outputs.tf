@@ -22,11 +22,6 @@ output "e2e_client_id" {
   value = module.e2e_client.client_id
 }
 
-output "e2e_client_secret" {
-  value     = module.e2e_client.client_secret
-  sensitive = true
-}
-
 output "perf_client_id" {
   value = module.perf_client.client_id
 }

@@ -42,7 +42,20 @@ tasks.named<TerraformInit>("tfInit") {
     backendConfigFile = property
 }
 
-val tfApply = tasks.named<TerraformApply>("tfApply")
+val tfPlan = tasks.named<TerraformPlan>("tfPlan") {
+    doLast {
+        val f = File(dataDir.get(), ".applied-plan.sha256")
+        f.writeText("ignored")
+    }
+}
+
+val tfApply = tasks.named<TerraformApply>("tfApply") {
+    doLast {
+        val f = File(dataDir.get(), ".applied-plan.sha256")
+        f.writeText("ignored")
+    }
+}
+
 
 val tfCacheOutputsVariables = tasks.named<TerraformOutputJson>("tfCacheOutputVariables") {
     inputs.files(tfApply)
@@ -52,3 +65,12 @@ val tfCacheOutputsVariables = tasks.named<TerraformOutputJson>("tfCacheOutputVar
 artifacts {
     add("terraformOutputs", tfCacheOutputsVariables.map { it.statusReportOutputFile })
 }
+
+
+//plan run -> tfplan1
+//apply run -> tracker = old, later = tfplan1
+//apply run -> tracker = tfplan1 != old
+
+//plan run -> tfplan1
+//apply run -> tracker = tfplan1 (after cleanup), later = tfplan1
+//apply up to date -> tracker = tfplan1 == tfplan1

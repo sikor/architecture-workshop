@@ -31,11 +31,6 @@ output "perf_client_id" {
   value = module.perf_client.client_id
 }
 
-output "perf_client_secret" {
-  value     = module.perf_client.client_secret
-  sensitive = true
-}
-
 output "token_uri" {
   value = "https://login.microsoftonline.com/${data.azurerm_client_config.current.tenant_id}/oauth2/v2.0/token"
 }

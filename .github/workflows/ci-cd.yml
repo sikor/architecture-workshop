@@ -61,11 +61,9 @@ jobs:
           echo "e2e_client_id=$(terraform output -raw e2e_client_id)" >> "$GITHUB_OUTPUT"
           echo "e2e_client_secret=$(terraform output -raw e2e_client_secret)" >> "$GITHUB_OUTPUT"
           echo "perf_client_id=$(terraform output -raw perf_client_id)" >> "$GITHUB_OUTPUT"
-          echo "perf_client_secret=$(terraform output -raw perf_client_secret)" >> "$GITHUB_OUTPUT"
           
           # Mask the secret so it never appears in logs
           echo "::add-mask::$(terraform output -raw e2e_client_secret)"
-          echo "::add-mask::$(terraform output -raw perf_client_secret)"
         working-directory: infra/src/tf/main
 
       - name: Set up Java 21

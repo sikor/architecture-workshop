@@ -6,6 +6,7 @@ import com.azure.security.keyvault.secrets.SecretClientBuilder;
 import org.gradle.api.provider.MapProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.Input;
+import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.testing.Test;
 import groovy.json.JsonSlurper;
@@ -36,7 +37,7 @@ public abstract class AbstractRemoteTestTask extends Test {
         return terraformToEnvMappings;
     }
 
-    @Input
+    @InputFile
     public Property<File> getTerraformOutputsFile() {
         return terraformOutputsFile;
     }

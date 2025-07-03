@@ -61,8 +61,13 @@ public class PerformanceTest {
                         .connectionTimeout(Duration.ofSeconds(10))
                         .responseTimeout(Duration.ofSeconds(20)),
                 rpsThreadGroup()
-                        .maxThreads(500)
-                        .rampToAndHold(5, Duration.ofSeconds(10), Duration.ofSeconds(10))
+                        .maxThreads(1000)
+                        .rampToAndHold(600, Duration.ofSeconds(30), Duration.ofSeconds(10))
+                        .rampToAndHold(700, Duration.ofSeconds(10), Duration.ofSeconds(10))
+                        .rampToAndHold(800, Duration.ofSeconds(10), Duration.ofSeconds(10))
+                        .rampToAndHold(900, Duration.ofSeconds(10), Duration.ofSeconds(10))
+                        .rampToAndHold(1000, Duration.ofSeconds(10), Duration.ofSeconds(10))
+                        .rampToAndHold(1100, Duration.ofSeconds(10), Duration.ofSeconds(10))
                         .children(
                                 httpSampler("Commands sampler", url.toString() + "/commands")
                                         .method("POST")
@@ -81,7 +86,7 @@ public class PerformanceTest {
                         ),
                 autoStop()
                         .when(errors().total().greaterThan(100L)), // when any sample fails, then test plan will stop and an exception will be thrown pointing to this condition.
-                htmlReporter(reportDir),
+                htmlReporter(reportDir).timeGraphsGranularity(Duration.ofSeconds(1)),
                 jtlWriter(reportDir) // Logs details of each request
         ).run();
 

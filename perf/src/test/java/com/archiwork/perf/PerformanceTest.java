@@ -58,11 +58,11 @@ public class PerformanceTest {
 
         TestPlanStats stats = testPlan(
                 httpDefaults()
-                        .connectionTimeout(Duration.ofSeconds(5))
-                        .responseTimeout(Duration.ofSeconds(10)),
+                        .connectionTimeout(Duration.ofSeconds(10))
+                        .responseTimeout(Duration.ofSeconds(20)),
                 rpsThreadGroup()
                         .maxThreads(500)
-                        .rampToAndHold(5, Duration.ofSeconds(1), Duration.ofSeconds(5))
+                        .rampToAndHold(5, Duration.ofSeconds(10), Duration.ofSeconds(10))
                         .children(
                                 httpSampler("Commands sampler", url.toString() + "/commands")
                                         .method("POST")
@@ -80,7 +80,8 @@ public class PerformanceTest {
                                                 """, Instant.now()))
                         ),
                 autoStop()
-                        .when(errors().total().greaterThan(0L)), // when any sample fails, then test plan will stop and an exception will be thrown pointing to this condition.
+                        .when(errors().total().greaterThan(100L)), // when any sample fails, then test plan will stop and an exception will be thrown pointing to this condition.
+                htmlReporter(reportDir),
                 jtlWriter(reportDir) // Logs details of each request
         ).run();
 

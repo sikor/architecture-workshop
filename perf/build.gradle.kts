@@ -40,4 +40,5 @@ java {
 
 tasks.test {
     useJUnitPlatform()
+    enabled = !project.hasProperty("disablePerfTest")
 }

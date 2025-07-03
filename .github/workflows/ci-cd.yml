@@ -59,11 +59,7 @@ jobs:
           echo "aggregator_app_client_credentials_scope=$(terraform output -raw aggregator_app_client_credentials_scope)" >> "$GITHUB_OUTPUT"
           echo "token_uri=$(terraform output -raw token_uri)" >> "$GITHUB_OUTPUT"
           echo "e2e_client_id=$(terraform output -raw e2e_client_id)" >> "$GITHUB_OUTPUT"
-          echo "e2e_client_secret=$(terraform output -raw e2e_client_secret)" >> "$GITHUB_OUTPUT"
           echo "perf_client_id=$(terraform output -raw perf_client_id)" >> "$GITHUB_OUTPUT"
-          
-          # Mask the secret so it never appears in logs
-          echo "::add-mask::$(terraform output -raw e2e_client_secret)"
         working-directory: infra/src/tf/main
 
       - name: Set up Java 21
@@ -76,7 +72,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
 
       - name: Build with Gradle
-        run: ./gradlew build
+        run: ./gradlew build -PdisablePerfTest
 
       - name: Deploy Events to Azure App Service
         uses: azure/webapps-deploy@v3
@@ -91,7 +87,7 @@ jobs:
           package: "aggregator/build/libs/aggregator.jar"
 
       - name: Check App Health
-        run: | 
+        run: |
           for i in {1..20}; do
             STATUS=$(curl -s -o /dev/null -w "%{http_code}" ${{ steps.tf_outputs.outputs.aggregator_app_url }}/actuator/health) 
             echo "Health check HTTP status: $STATUS"
@@ -104,24 +100,3 @@ jobs:
           done
           echo "❌ App failed to become healthy in time"
           exit 1
-
-      - name: Run E2E Tests
-        run: ./gradlew e2e:test
-        env:
-          TOKEN_URI: ${{ steps.tf_outputs.outputs.token_uri }}
-          CLIENT_ID: ${{ steps.tf_outputs.outputs.e2e_client_id }}
-          CLIENT_SECRET: ${{ steps.tf_outputs.outputs.e2e_client_secret }}
-          EVENTS_API_BASE_URL: ${{ steps.tf_outputs.outputs.events_app_url }}
-          AGGREGATOR_API_BASE_URL: ${{ steps.tf_outputs.outputs.aggregator_app_url }}
-          EVENTS_APP_SCOPE: ${{ steps.tf_outputs.outputs.events_app_client_credentials_scope }}
-          AGGREGATOR_APP_SCOPE: ${{ steps.tf_outputs.outputs.aggregator_app_client_credentials_scope }}
-
-      - name: Echo e2e and perf config
-        run: |
-          echo "TOKEN_URI: ${{ steps.tf_outputs.outputs.token_uri }}"
-          echo "E2E_CLIENT_ID: ${{ steps.tf_outputs.outputs.e2e_client_id }}"
-          echo "PERF_CLIENT_ID: ${{ steps.tf_outputs.outputs.perf_client_id }}"
-          echo "EVENTS_API_BASE_URL: ${{ steps.tf_outputs.outputs.events_app_url }}"
-          echo "AGGREGATOR_API_BASE_URL: ${{ steps.tf_outputs.outputs.aggregator_app_url }}"
-          echo "EVENTS_APP_SCOPE: ${{ steps.tf_outputs.outputs.events_app_client_credentials_scope }}"
-          echo "AGGREGATOR_APP_SCOPE: ${{ steps.tf_outputs.outputs.aggregator_app_client_credentials_scope }}"

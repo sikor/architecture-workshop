@@ -17,7 +17,7 @@ resource "azurerm_postgresql_flexible_server" "events_db" {
   administrator_password = azurerm_key_vault_secret.pg_password.value
 
   sku_name   = "B_Standard_B1ms"
-  version    = "17"
+  version    = "16"
   storage_mb = 32768
 
   zone = "1"

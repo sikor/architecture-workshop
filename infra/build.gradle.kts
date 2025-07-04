@@ -1,5 +1,7 @@
 import org.ysb33r.gradle.terraform.backends.GenericBackend
+import org.ysb33r.gradle.terraform.internal.plugins.TerraformGlobalConfigForMultiProjectSubProjectPlugin
 import org.ysb33r.gradle.terraform.tasks.TerraformApply
+import org.ysb33r.gradle.terraform.tasks.TerraformImport
 import org.ysb33r.gradle.terraform.tasks.TerraformInit
 import org.ysb33r.gradle.terraform.tasks.TerraformOutputJson
 import org.ysb33r.gradle.terraform.tasks.TerraformPlan
@@ -42,6 +44,10 @@ tasks.named<TerraformInit>("tfInit") {
     backendConfigFile = property
 }
 
+tasks.named<TerraformImport>("tfImport") {
+    dependsOn(TerraformGlobalConfigForMultiProjectSubProjectPlugin.SYNC_TASK)
+}
+
 val tfPlan = tasks.named<TerraformPlan>("tfPlan") {
     doLast {
         val f = File(dataDir.get(), ".applied-plan.sha256")
@@ -55,7 +61,6 @@ val tfApply = tasks.named<TerraformApply>("tfApply") {
         f.writeText("ignored")
     }
 }
-
 
 val tfCacheOutputsVariables = tasks.named<TerraformOutputJson>("tfCacheOutputVariables") {
     inputs.files(tfApply)

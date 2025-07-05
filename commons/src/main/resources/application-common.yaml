@@ -4,10 +4,6 @@ spring:
     driver-class-name: org.postgresql.Driver
     username: ${POSTGRES_USERNAME}
     password: ${POSTGRES_PASSWORD}
-  jpa:
-    hibernate:
-      ddl-auto: update
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
   security:
     oauth2:
       resourceserver:

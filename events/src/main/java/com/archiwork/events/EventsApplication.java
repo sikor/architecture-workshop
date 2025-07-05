@@ -3,7 +3,8 @@ package com.archiwork.events;
 import com.archiwork.commons.Env;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
-import org.springframework.boot.SpringApplication;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
@@ -19,9 +20,12 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 @ConfigurationPropertiesScan(basePackages = {"com.archiwork.events", "com.archiwork.commons.serverSecurity"})
 @SpringBootApplication(scanBasePackages = {"com.archiwork.events", "com.archiwork.commons.serverSecurity"})
 public class EventsApplication {
+    private static final Logger logger = LoggerFactory.getLogger(EventsApplication.class);
 
     public static void main(String[] args) {
+        logger.info("Starting EventsApplication Spring application");
         createApplication().run(args);
+        logger.info("Spring application started");
     }
 
     public static SpringApplicationBuilder createApplication() {

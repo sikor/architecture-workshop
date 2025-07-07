@@ -45,6 +45,12 @@ resource "azurerm_role_assignment" "keyvault_admin" {
   principal_id         = var.admin_object_id       # 👈 pass in the objectId
 }
 
+resource "azurerm_role_assignment" "keyvault_access_admin" {
+  scope                = azurerm_key_vault.project_kv.id
+  role_definition_name = "User Access Administrator" # 👈 use a built-in role
+  principal_id         = var.admin_object_id       # 👈 pass in the objectId
+}
+
 resource "azurerm_role_assignment" "keyvault_personal_admin" {
   scope                = azurerm_key_vault.project_kv.id
   role_definition_name = "Key Vault Administrator"   # 👈 use a built-in role

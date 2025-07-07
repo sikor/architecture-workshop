@@ -39,6 +39,7 @@ module "events_app" {
     "DATABASE_URL"      = azurerm_postgresql_flexible_server.events_db.fqdn
     "DATABASE_NAME"     = azurerm_postgresql_flexible_server_database.events_db_instance.name
     "POSTGRES_PASSWORD" = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.pg_password.id})"
+    "FAILING_PASS"      = "@Microsoft.KeyVault(SecretUri=@Microsoft.KeyVault(SecretUri=https://archiwork-kv-75b0bd6c.vault.azure.net/secrets/failing_pass/9c5a55b508a544aba4131fdbab55474e))"
     "POSTGRES_USERNAME" = azurerm_postgresql_flexible_server.events_db.administrator_login
   }
 

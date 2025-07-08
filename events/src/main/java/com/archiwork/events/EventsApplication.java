@@ -1,6 +1,8 @@
 package com.archiwork.events;
 
 import com.archiwork.commons.Env;
+import com.archiwork.observability.metrics.MetricRegistry;
+import io.opentelemetry.api.GlobalOpenTelemetry;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
 import org.slf4j.Logger;
@@ -24,6 +26,9 @@ public class EventsApplication {
 
     public static void main(String[] args) {
         logger.info("Starting EventsApplication Spring application");
+//        MetricRegistry metrics = new MetricRegistry(GlobalOpenTelemetry.getMeter("your-app"));
+//        metrics.dbAuthFailures.add(1);
+
         createApplication().run(args);
         logger.info("Spring application started");
     }

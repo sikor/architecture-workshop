@@ -6,6 +6,7 @@ include("e2e")
 include("perf")
 include("launcher")
 include("infra")
+include("observability")
 
 pluginManagement {
     plugins {

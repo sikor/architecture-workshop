@@ -16,6 +16,7 @@ dependencyManagement {
 }
 
 dependencies {
+    api(project(":observability"))
     api("ch.qos.logback:logback-classic:1.5.18")
     implementation(enforcedPlatform("org.springframework.boot:spring-boot-dependencies:3.4.5"))
     api("org.springframework.boot:spring-boot-starter-web")

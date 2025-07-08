@@ -58,16 +58,20 @@ public class PerformanceTest {
 
         TestPlanStats stats = testPlan(
                 httpDefaults()
-                        .connectionTimeout(Duration.ofSeconds(10))
-                        .responseTimeout(Duration.ofSeconds(20)),
+                        .connectionTimeout(Duration.ofSeconds(1))
+                        .responseTimeout(Duration.ofSeconds(1)),
                 rpsThreadGroup()
                         .maxThreads(1000)
-                        .rampToAndHold(600, Duration.ofSeconds(30), Duration.ofSeconds(10))
-                        .rampToAndHold(700, Duration.ofSeconds(10), Duration.ofSeconds(10))
-                        .rampToAndHold(800, Duration.ofSeconds(10), Duration.ofSeconds(10))
-                        .rampToAndHold(900, Duration.ofSeconds(10), Duration.ofSeconds(10))
-                        .rampToAndHold(1000, Duration.ofSeconds(10), Duration.ofSeconds(10))
-                        .rampToAndHold(1100, Duration.ofSeconds(10), Duration.ofSeconds(10))
+                        .rampToAndHold(5, Duration.ofSeconds(5), Duration.ofSeconds(10))
+                        .rampToAndHold(10, Duration.ofSeconds(5), Duration.ofSeconds(10))
+                        .rampToAndHold(15, Duration.ofSeconds(5), Duration.ofSeconds(10))
+                        .rampToAndHold(20, Duration.ofSeconds(5), Duration.ofSeconds(10))
+                        .rampToAndHold(25, Duration.ofSeconds(5), Duration.ofSeconds(10))
+                        .rampToAndHold(30, Duration.ofSeconds(5), Duration.ofSeconds(10))
+                        .rampToAndHold(35, Duration.ofSeconds(5), Duration.ofSeconds(10))
+                        .rampToAndHold(40, Duration.ofSeconds(5), Duration.ofSeconds(10))
+                        .rampToAndHold(45, Duration.ofSeconds(5), Duration.ofSeconds(10))
+                        .rampToAndHold(50, Duration.ofSeconds(5), Duration.ofSeconds(10))
                         .children(
                                 httpSampler("Commands sampler", url.toString() + "/commands")
                                         .method("POST")

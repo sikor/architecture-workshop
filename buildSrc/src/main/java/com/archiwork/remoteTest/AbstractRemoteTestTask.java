@@ -6,28 +6,25 @@ import com.azure.security.keyvault.secrets.SecretClientBuilder;
 import org.gradle.api.provider.MapProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.Input;
-import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.testing.Test;
-import groovy.json.JsonSlurper;
 
-import java.io.File;
 import java.util.Map;
 
 public abstract class AbstractRemoteTestTask extends Test {
 
     private final Property<String> vaultUrlTerraformOutputName;
     private final MapProperty<String, String> keyVaultToEnvMappings;
-    private final Property<File> terraformOutputsFile;
     private final MapProperty<String, String> terraformToEnvMappings;
+    private final MapProperty<String, String> terraformOutputs;
 
     public AbstractRemoteTestTask() {
         super();
 
         this.vaultUrlTerraformOutputName = getObjectFactory().property(String.class);
         this.keyVaultToEnvMappings = getObjectFactory().mapProperty(String.class, String.class);
-        this.terraformOutputsFile = getObjectFactory().property(File.class);
         this.terraformToEnvMappings = getObjectFactory().mapProperty(String.class, String.class);
+        this.terraformOutputs = getObjectFactory().mapProperty(String.class, String.class);
 
         useJUnitPlatform();
     }
@@ -35,11 +32,6 @@ public abstract class AbstractRemoteTestTask extends Test {
     @Input
     public MapProperty<String, String> getTerraformToEnvMappings() {
         return terraformToEnvMappings;
-    }
-
-    @InputFile
-    public Property<File> getTerraformOutputsFile() {
-        return terraformOutputsFile;
     }
 
     @Input
@@ -52,36 +44,25 @@ public abstract class AbstractRemoteTestTask extends Test {
         return keyVaultToEnvMappings;
     }
 
+    @Input
+    public MapProperty<String, String> getTerraformOutputs() {
+        return terraformOutputs;
+    }
+
     @TaskAction
     public void executeTests() {
         getLogger().lifecycle("Injecting Terraform output values as environment variables...");
 
-        File terraformOutputs = getTerraformOutputsFile().get();
-
-        getLogger().lifecycle("terraform outputs file: " + terraformOutputs.getAbsolutePath());
-        if (!terraformOutputs.exists()) {
-            throw new RuntimeException("Terraform outputs file not found: " + terraformOutputs.getAbsolutePath());
-        }
-
-        // Parse using Groovy's built-in JSON parser
-        Object tfOutputsParsed = new JsonSlurper().parse(terraformOutputs);
-
-        if (!(tfOutputsParsed instanceof Map)) {
-            throw new RuntimeException("Unexpected format in outputs.json");
-        }
-
-        @SuppressWarnings("unchecked") final Map<String, Object> outputs = (Map<String, Object>) tfOutputsParsed;
-
         for (Map.Entry<String, String> entry : terraformToEnvMappings.get().entrySet()) {
             String terraformOutputName = entry.getKey();
             String envVarName = entry.getValue();
-            String value = getTfOutputString(outputs, terraformOutputName);
+            String value = terraformOutputs.get().get(terraformOutputName);
             environment(envVarName, value);
-            System.out.printf("%s = %s%n", envVarName, value);
+            getLogger().info("{} = {}", envVarName, value);
         }
 
         if (keyVaultToEnvMappings.isPresent()) {
-            String keyVaultUrl = getTfOutputString(outputs, this.getVaultUrlTerraformOutputName().get());
+            String keyVaultUrl = terraformOutputs.get().get(this.getVaultUrlTerraformOutputName().get());
             SecretClient secretClient = new SecretClientBuilder()
                     .vaultUrl(keyVaultUrl)
                     .credential(new DefaultAzureCredentialBuilder().build())
@@ -93,21 +74,10 @@ public abstract class AbstractRemoteTestTask extends Test {
                 String value = secretClient.getSecret(secretName).getValue();
 
                 environment(envVarName, value);
-                System.out.printf("%s set%n", envVarName);
+                getLogger().info("{} set", envVarName);
             }
-
         }
 
         super.executeTests();
-    }
-
-    private static String getTfOutputString(Map<String, Object> outputs, String terraformOutputName) {
-        Object output = outputs.get(terraformOutputName);
-        if (output == null) {
-            throw new RuntimeException("terraformOutput not found: " + terraformOutputName + "\n in " + outputs);
-        }
-        @SuppressWarnings("unchecked")
-        String value = ((Map<String, String>) output).get("value");
-        return value;
     }
 }

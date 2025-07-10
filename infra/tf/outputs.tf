@@ -1,3 +1,7 @@
+output "resource_group_name" {
+  value = azurerm_resource_group.project_rg.name
+}
+
 output "events_app_name" {
   description = "The name of the Events Azure App Service"
   value       = module.events_app.app_name

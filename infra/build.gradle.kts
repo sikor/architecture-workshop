@@ -11,6 +11,11 @@ plugins {
 }
 
 terraform {
+    toolchains {
+        getByName("standard") {
+            executableBySearchPath("terraform")
+        }
+    }
     backends {
         create("azure", GenericBackend::class) {
 
@@ -23,6 +28,7 @@ terraform {
             variables {
                 files("sikor.tfvars")
             }
+            setSrcDir(file("tf"))
         }
     }
 }

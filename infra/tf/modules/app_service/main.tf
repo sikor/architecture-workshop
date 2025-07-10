@@ -78,7 +78,7 @@ resource "azurerm_linux_web_app" "app" {
 
   site_config {
     always_on = true
-
+    health_check_path = "/actuator/health"
     container_registry_use_managed_identity = true
 
     application_stack {

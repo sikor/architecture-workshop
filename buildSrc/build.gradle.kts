@@ -7,7 +7,7 @@ gradlePlugin {
     plugins {
         create("remoteTestPlugin") {
             id = "com.archiwork.remoteTest"
-            implementationClass = "com.archiwork.remoteTest.RemoteTestPlugin"
+            implementationClass = "com.archiwork.remoteTest.CloudPropertiesAndTasksPlugin"
         }
     }
 }

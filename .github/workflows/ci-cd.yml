@@ -24,12 +24,6 @@ jobs:
         with:
           terraform_wrapper: false
 
-      - name: Show Terraform path
-        run: which terraform
-
-      - name: Show Terraform version
-        run: terraform version
-
       - name: Azure Login
         uses: azure/login@v1
         with:

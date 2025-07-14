@@ -1,18 +1,21 @@
-import org.gradle.kotlin.dsl.named
-import org.springframework.boot.gradle.tasks.bundling.BootJar
-
 plugins {
     id("org.springframework.boot")
     id("io.spring.dependency-management")
     id("java")
+    id("application")
     id("com.archiwork.remoteTest")
 }
+
+application {
+    mainClass.set("com.archiwork.aggregator.AggregatorApplication")
+}
+
 
 remoteTest {
     iacProjectName.set(":infra")
     appNameTfOutputName.set("aggregator_app_name")
     resourceGroupTfOutputName.set("resource_group_name")
-    deploymentArchiveTask.set(tasks.named<BootJar>("bootJar"))
+    deploymentArchiveTask.set(tasks.named<Zip>("distZip"))
 }
 
 java {

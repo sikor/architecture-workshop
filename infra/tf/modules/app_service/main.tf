@@ -3,6 +3,10 @@ variable "app_base_name" {
   type        = string
 }
 
+variable "app_command_line" {
+  type = string
+}
+
 variable "location" {
   description = "Azure region"
   type        = string
@@ -30,8 +34,8 @@ variable "log_analytics_workspace_id" {
 
 variable "app_settings" {
   description = "Optional app settings override"
-  type        = map(string)
-  default     = {} # caller doesn't have to provide it
+  type = map(string)
+  default = {} # caller doesn't have to provide it
 }
 
 locals {
@@ -77,10 +81,11 @@ resource "azurerm_linux_web_app" "app" {
   }
 
   site_config {
-    always_on = true
-    health_check_path = "/actuator/health"
-    health_check_eviction_time_in_min  = 4
+    always_on                               = true
+    health_check_path                       = "/actuator/health"
+    health_check_eviction_time_in_min       = 4
     container_registry_use_managed_identity = true
+    app_command_line                        = var.app_command_line
 
     application_stack {
       java_server         = "JAVA"

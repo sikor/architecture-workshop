@@ -35,7 +35,7 @@ public abstract class AbstractDeployToAzureTask extends DefaultTask {
                 "--name", getAppName().get(),
                 "--resource-group", getResourceGroup().get(),
                 "--src-path", getJarFile().get(),
-                "--type", "jar")
+                "--type", "zip")
         );
     }
 }

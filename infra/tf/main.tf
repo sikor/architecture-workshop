@@ -35,6 +35,7 @@ module "events_app" {
   tenant_id                  = data.azurerm_client_config.current.tenant_id
   key_vault_id               = module.key_vault.key_vault_id
   log_analytics_workspace_id = azurerm_log_analytics_workspace.log_analytics.id
+  app_command_line           = "sh /home/site/wwwroot/events/bin/events"
   app_settings = {
     "DATABASE_URL"      = azurerm_postgresql_flexible_server.events_db.fqdn
     "DATABASE_NAME"     = azurerm_postgresql_flexible_server_database.events_db_instance.name
@@ -54,6 +55,7 @@ module "aggregator_app" {
   tenant_id                  = data.azurerm_client_config.current.tenant_id
   key_vault_id               = module.key_vault.key_vault_id
   log_analytics_workspace_id = azurerm_log_analytics_workspace.log_analytics.id
+  app_command_line           = "sh /home/site/wwwroot/aggregator/bin/aggregator"
   app_settings = {
     "DATABASE_URL"        = azurerm_postgresql_flexible_server.events_db.fqdn
     "DATABASE_NAME"       = azurerm_postgresql_flexible_server_database.aggregator_db_instance.name

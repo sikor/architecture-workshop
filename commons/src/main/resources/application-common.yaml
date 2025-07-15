@@ -22,3 +22,9 @@ archiwork-commons:
     authorizationUrl: ${AUTHORIZATION_URL} # https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/authorize
     tokenUrl: ${TOKEN_URL} # https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/token
     scope: ${AD_SCOPE}
+management:
+  metrics:
+    export:
+      otlp:
+        enabled: true
+        endpoint: ${OTLP_ENDPOINT}

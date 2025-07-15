@@ -28,6 +28,8 @@ dependencies {
     api("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
     api("org.springframework.boot:spring-boot-starter-security")
     api("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
+    api("io.micrometer:micrometer-registry-otlp")
+
 
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")

@@ -11,3 +11,19 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-databind:2.17.1")
     implementation("org.snakeyaml:snakeyaml-engine:2.7")
 }
+
+tasks.register<JavaExec>("generatePrometheusYaml") {
+    group = "build"
+    description = "Generates Prometheus alert definitions YAML"
+
+    dependsOn("classes")
+    classpath = sourceSets["main"].runtimeClasspath
+    mainClass.set("com.archiwork.observability.generator.Main")
+
+    val alertsFileName =
+        project.layout.buildDirectory.file("generated/prometheus/prometheus-alerts.yaml")
+
+    args("prometheus", alertsFileName)
+
+    outputs.file(alertsFileName)
+}

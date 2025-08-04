@@ -1,11 +1,15 @@
 package com.archiwork.observability.alerts;
 
 import java.time.Duration;
+import java.util.Optional;
 
 public record AlertDefinition(String name,
+                              MetricType metricType,
                               String metric,
+                              Operator operator,
                               double threshold,
-                              Duration duration,
+                              Duration forDuration,
                               AlertSeverity severity,
-                              String description) {
+                              String description,
+                              Optional<Duration> aggregationDuration) {
 }

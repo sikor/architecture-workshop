@@ -1,4 +1,4 @@
-package com.archiwork.observability.generator;
+package com.archiwork.observability.alerts.generator;
 
 import com.archiwork.observability.alerts.AlertDefinition;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,7 +25,7 @@ public class AzureTerraformGenerator {
             alertResource.put("description", alert.description());
             alertResource.put("severity", mapSeverity(alert.severity()));
             alertResource.put("frequency", "PT1M");
-            alertResource.put("window_size", formatDuration(alert.duration()));
+            alertResource.put("window_size", formatDuration(alert.forDuration()));
             alertResource.put("enabled", true);
 
             Map<String, Object> criteria = new HashMap<>();

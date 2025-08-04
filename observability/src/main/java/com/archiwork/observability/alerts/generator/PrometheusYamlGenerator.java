@@ -1,4 +1,4 @@
-package com.archiwork.observability.generator;
+package com.archiwork.observability.alerts.generator;
 
 import com.archiwork.observability.alerts.AlertDefinition;
 import org.snakeyaml.engine.v2.api.Dump;
@@ -35,8 +35,14 @@ public class PrometheusYamlGenerator {
     private static Map<String, Object> alertToMap(AlertDefinition alert) {
         Map<String, Object> rule = new LinkedHashMap<>();
         rule.put("alert", alert.name());
-        rule.put("expr", alert.metric() + " > " + alert.threshold());
-        rule.put("for", alert.duration().toMinutes() + "m");
+        switch (alert.metricType()) {
+            case GAUGE ->
+                    rule.put("expr", alert.metric() + " " + alert.operator().toPrometheusOperator() + " " + alert.threshold());
+            case COUNTER ->
+                    rule.put("expr", "rate(" + alert.metric() + "[" + alert.aggregationDuration().get().toSeconds() + "s])" + " " + alert.operator().toPrometheusOperator() + " " + alert.threshold());
+        }
+
+        rule.put("for", alert.forDuration().toMinutes() + "m");
 
         Map<String, String> labels = Map.of("severity", alert.severity().name().toLowerCase());
         rule.put("labels", labels);

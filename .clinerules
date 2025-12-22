@@ -1,0 +1,4 @@
+## Coding style
+- Java 21, Spring Boot.
+- Prefer constructor injection (no field injection).
+- Keep changes minimal: avoid reformatting entire files.

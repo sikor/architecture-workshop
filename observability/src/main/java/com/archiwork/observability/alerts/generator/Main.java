@@ -2,14 +2,14 @@ package com.archiwork.observability.alerts.generator;
 
 import com.archiwork.observability.alerts.AlertDefinition;
 import com.archiwork.observability.alerts.AlertSeverity;
-import com.archiwork.observability.alerts.MetricType;
+import com.archiwork.observability.alerts.GaugeAlertDefinition;
 import com.archiwork.observability.alerts.Operator;
+
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * CLI entry point to generate alert definit`ions.
@@ -32,18 +32,18 @@ public class Main {
         Path outputPath = Path.of(args[1]);
 
         List<AlertDefinition> alerts = List.of(
-                new AlertDefinition(
+                new GaugeAlertDefinition(
                         "DB Authentication failed",
-                        MetricType.GAUGE,
                         "db_auth_failed",
                         Operator.EQUALS,
                         1,
                         Duration.ofMinutes(1),
                         AlertSeverity.CRITICAL,
-                        "Application failed to authenticated to the database",
-                        Optional.empty()
+                        "Application failed to authenticated to the database"
                 )
         );
+
+
 
         String yaml;
         switch (generatorName) {

@@ -1,6 +1,8 @@
 package com.archiwork.observability.alerts.generator;
 
 import com.archiwork.observability.alerts.AlertDefinition;
+import com.archiwork.observability.alerts.GaugeAlertDefinition;
+import com.archiwork.observability.alerts.CounterAlertDefinition;
 import org.snakeyaml.engine.v2.api.Dump;
 import org.snakeyaml.engine.v2.api.DumpSettings;
 import org.snakeyaml.engine.v2.common.FlowStyle;
@@ -35,11 +37,11 @@ public class PrometheusYamlGenerator {
     private static Map<String, Object> alertToMap(AlertDefinition alert) {
         Map<String, Object> rule = new LinkedHashMap<>();
         rule.put("alert", alert.name());
-        switch (alert.metricType()) {
-            case GAUGE ->
-                    rule.put("expr", alert.metric() + " " + alert.operator().toPrometheusOperator() + " " + alert.threshold());
-            case COUNTER ->
-                    rule.put("expr", "rate(" + alert.metric() + "[" + alert.aggregationDuration().get().toSeconds() + "s])" + " " + alert.operator().toPrometheusOperator() + " " + alert.threshold());
+        switch (alert) {
+            case GaugeAlertDefinition a ->
+                    rule.put("expr", a.metric() + " " + a.operator().toPrometheusOperator() + " " + a.threshold());
+            case CounterAlertDefinition a ->
+                    rule.put("expr", "rate(" + a.metric() + "[" + a.aggregationDuration().toSeconds() + "s])" + " " + a.operator().toPrometheusOperator() + " " + a.threshold());
         }
 
         rule.put("for", alert.forDuration().toMinutes() + "m");

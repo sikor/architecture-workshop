@@ -18,12 +18,12 @@ tasks.register<JavaExec>("generatePrometheusYaml") {
 
     dependsOn("classes")
     classpath = sourceSets["main"].runtimeClasspath
-    mainClass.set("com.archiwork.observability.generator.Main")
+    mainClass.set("com.archiwork.observability.alerts.generator.Main")
 
     val alertsFileName =
         project.layout.buildDirectory.file("generated/prometheus/prometheus-alerts.yaml")
 
-    args("prometheus", alertsFileName)
+    args("prometheus", alertsFileName.get().asFile.absolutePath)
 
     outputs.file(alertsFileName)
 }

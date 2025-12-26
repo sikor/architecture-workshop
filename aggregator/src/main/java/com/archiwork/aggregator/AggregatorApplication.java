@@ -25,6 +25,7 @@ public class AggregatorApplication {
     public static SpringApplicationBuilder createApplicationWithDefaultProperties() {
         return new SpringApplicationBuilder(AggregatorApplication.class)
                 .properties("spring.config.name=application-aggregator")
-                .properties(Env.loadEnvFromClasspath("aggregator-local.env"));
+                .properties(Env.loadEnvFromClasspath("aggregator-local.env"))
+                .properties("spring.flyway.locations=classpath:db/migration/aggregator");
     }
 }

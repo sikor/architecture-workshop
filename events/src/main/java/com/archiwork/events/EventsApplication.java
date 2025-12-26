@@ -36,6 +36,7 @@ public class EventsApplication {
     public static SpringApplicationBuilder createApplication() {
         return new SpringApplicationBuilder(EventsApplication.class)
                 .properties("spring.config.name=application-events")
-                .properties(Env.loadEnvFromClasspath("events-local.env"));
+                .properties(Env.loadEnvFromClasspath("events-local.env"))
+                .properties("spring.flyway.locations=classpath:db/migration/events");
     }
 }

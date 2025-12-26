@@ -17,7 +17,7 @@ dependencyManagement {
 
 dependencies {
     api(project(":observability"))
-    api("ch.qos.logback:logback-classic:1.5.18")
+//    api("ch.qos.logback:logback-classic:1.5.18")
     implementation(enforcedPlatform("org.springframework.boot:spring-boot-dependencies:3.4.5"))
     api("org.springframework.boot:spring-boot-starter-web")
     api("org.springframework.boot:spring-boot-starter-oauth2-client")
@@ -30,7 +30,7 @@ dependencies {
     api("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
     api("io.opentelemetry:opentelemetry-api:1.33.0")
     api("io.micrometer:micrometer-registry-otlp")
-    runtimeOnly("io.opentelemetry.instrumentation:opentelemetry-logback-appender-1.0")
+    runtimeOnly("io.opentelemetry.instrumentation:opentelemetry-logback-appender-1.0:2.23.0-alpha")
 
 
 

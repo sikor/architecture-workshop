@@ -1,4 +1,4 @@
-package com.archiwork.commons;
+package com.archiwork.commons.properties;
 
 
 import org.springframework.context.ApplicationContextInitializer;

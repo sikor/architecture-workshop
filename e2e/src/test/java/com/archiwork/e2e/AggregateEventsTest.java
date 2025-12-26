@@ -1,6 +1,6 @@
 package com.archiwork.e2e;
 
-import com.archiwork.commons.DefaultPropertiesLoader;
+import com.archiwork.commons.properties.DefaultPropertiesLoader;
 import com.archiwork.commons.restClient.AccessTokenProvider;
 import com.archiwork.commons.restClient.ApiProperties;
 import com.archiwork.commons.restClient.RestClientConfig;

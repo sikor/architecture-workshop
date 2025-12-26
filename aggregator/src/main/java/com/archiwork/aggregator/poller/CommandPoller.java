@@ -4,7 +4,7 @@ import com.archiwork.aggregator.client.Command;
 import com.archiwork.aggregator.client.CommandsClient;
 import com.archiwork.aggregator.map.MapValue;
 import com.archiwork.aggregator.map.MapValueDao;
-import com.archiwork.commons.ReliableTask;
+import com.archiwork.commons.task.ReliableTask;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 

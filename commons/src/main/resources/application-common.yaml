@@ -28,3 +28,6 @@ management:
       otlp:
         enabled: true
         endpoint: ${OTLP_ENDPOINT}
+  otlp:
+    logging:
+      endpoint: ${OTLP_ENDPOINT}

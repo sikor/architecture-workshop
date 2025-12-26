@@ -1,6 +1,6 @@
 package com.archiwork.events.cursors.right;
 
-import com.archiwork.commons.ReliableTask;
+import com.archiwork.commons.task.ReliableTask;
 import org.postgresql.PGConnection;
 import org.postgresql.PGNotification;
 import org.slf4j.Logger;

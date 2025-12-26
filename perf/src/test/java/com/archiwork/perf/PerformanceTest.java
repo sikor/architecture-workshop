@@ -1,6 +1,6 @@
 package com.archiwork.perf;
 
-import com.archiwork.commons.DefaultPropertiesLoader;
+import com.archiwork.commons.properties.DefaultPropertiesLoader;
 import com.archiwork.commons.restClient.ApiProperties;
 import com.archiwork.commons.restClient.RestClientConfig;
 import com.archiwork.commons.restClient.AccessTokenProvider;

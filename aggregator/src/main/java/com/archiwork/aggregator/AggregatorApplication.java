@@ -1,6 +1,6 @@
 package com.archiwork.aggregator;
 
-import com.archiwork.commons.Env;
+import com.archiwork.commons.properties.Env;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

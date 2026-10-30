@@ -29,7 +29,7 @@ services:
       retries: 10
 
   postgresql:
-    image: bitnami/postgresql:17
+    image: soldevelo/postgresql:17
     environment:
       POSTGRESQL_USERNAME: pgadmin
       POSTGRESQL_PASSWORD: pgadmin
